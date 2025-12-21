@@ -1,0 +1,25 @@
+﻿Column Name,Data Type,"Default Value	",Nullable,Primary Key,Notes
+id,bigint,nextval('public-persona_id_seq'::regclass),No,Yes,Unique record identifier
+created_at,timestamp with time zone,now(),No,Yes,Timestamp of submission
+user_id,uuid,,No,No,Crucial for RLS.
+q1_answer,smallint,,No,No,Likert scale answer (1-5)
+q2_answer,smallint,,No,No,
+q3_answer,smallint,,No,No,
+q4_answer,smallint,,No,No,
+q5_answer,smallint,,No,No,
+q6_answer,smallint,,No,No,
+q7_answer,smallint,,No,No,
+q8_answer,smallint,,No,No,
+q9_answer,smallint,,No,No,
+q10_answer,smallint,,No,No,
+q11_answer,smallint,,No,No,
+q12_answer,smallint,,No,No,
+q13_answer,smallint,,No,No,
+q14_answer,smallint,,No,No,
+q15_answer,smallint,,No,No,
+q16_answer,smallint,,No,No,
+q17_answer,smallint,,No,No,
+q18_answer,smallint,,No,No,
+q19_answer,smallint,,No,No,
+q20_answer,smallint,,No,No,
+q21_answer,smallint,,No,No,
