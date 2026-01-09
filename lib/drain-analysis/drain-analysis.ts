@@ -189,7 +189,7 @@ export function computeDrainAnalysisUIModel(params: {
   const surfaceDrain = computeSurfaceDrain({ innateAvg, paths: routes });
   const surfaceTransfer = computeSurfaceTransfer({ innateAvg, paths: routes });
   // 4) rank drives by surface energy
-  const ranked = [...(driveNames as DriveName[])]
+  const ranked = [...driveNames]
     .map((d) => ({ d, s: clamp(n(surfaceAvg[d]), 0, 5) }))
     .sort((a, b) => b.s - a.s);
 
@@ -198,11 +198,11 @@ export function computeDrainAnalysisUIModel(params: {
 
   // 5) group paths by td
   const pathsByTd: Record<string, DrainReportPathEval[]> = {};
-  (driveNames as DriveName[]).forEach((d) => (pathsByTd[d] = []));
+  driveNames.forEach((d) => (pathsByTd[d] = []));
   paths.forEach((p) => pathsByTd[p.td].push(p));
 
   // 6) build rows (one per td)
-  const rows: DrainReportRow[] = (driveNames as DriveName[]).map((td) => {
+  const rows: DrainReportRow[] = driveNames.map((td) => {
     const tdSurf = clamp(n(surfaceAvg[td]), 0, 5);
 
     const tdDrainTotal = clamp(n(surfaceDrain[td]), 0, 5);

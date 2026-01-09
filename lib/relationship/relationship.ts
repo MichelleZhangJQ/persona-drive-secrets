@@ -37,14 +37,14 @@ function clamp01(x: number) {
 
 function buildWeightFromAvg(avg: DriveVector): DriveVector {
   const w = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     (w as any)[d] = clamp01(n((avg as any)[d]) / 5);
   });
   return w;
 }
 
 function maxAggregateDriveVector(target: DriveVector, candidate: DriveVector) {
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const cur = n((target as any)[d]);
     const next = n((candidate as any)[d]);
     (target as any)[d] = Math.max(cur, next);
@@ -59,7 +59,7 @@ function maxAggregateValueMap(target: Record<string, number>, candidate: Record<
 
 function cloneDriveVector(v: DriveVector): DriveVector {
   const out = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => ((out as any)[d] = n((v as any)[d])));
+  (driveNames).forEach((d) => ((out as any)[d] = n((v as any)[d])));
   return out;
 }
 
@@ -671,7 +671,7 @@ export function computeIdealPartnerProfileUIModel(params: {
   // ============================================================
   const partnerRaw = emptyDriveVector(0);
   blockNames.forEach((b) => maxAggregateDriveVector(partnerRaw, partnerNeedByBlock[b]));
-  (driveNames as DriveName[]).forEach((d) => ((partnerRaw as any)[d] = Math.max(0, n((partnerRaw as any)[d]))));
+  (driveNames).forEach((d) => ((partnerRaw as any)[d] = Math.max(0, n((partnerRaw as any)[d]))));
 
   // ✅ save a copy BEFORE caps for export / UI annotation
   const partnerRawUncapped = cloneDriveVector(partnerRaw);
@@ -851,7 +851,7 @@ export function computeIdealPartnerProfileUIModel(params: {
   // 6) partnerIdeal: RAW clamped to 0..5 (after caps)
   // ============================================================
   const partnerIdeal = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const v = n((partnerRaw as any)[d]);
     (partnerIdeal as any)[d] = clamp(v, 0, 5);
   });
@@ -859,7 +859,7 @@ export function computeIdealPartnerProfileUIModel(params: {
   // ============================================================
   // 7) Rows + Bars (displayScore scaled so max bar is 5)
   // ============================================================
-  const rowsUnranked: PartnerDriveRow[] = (driveNames as DriveName[]).map((d) => ({
+  const rowsUnranked: PartnerDriveRow[] = (driveNames).map((d) => ({
     drive: d,
     rank: 0,
     rawDemand: n((partnerRaw as any)[d]),

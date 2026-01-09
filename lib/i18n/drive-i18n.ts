@@ -66,5 +66,5 @@ export function driveInitial(drive: DriveName, locale?: string) {
 }
 
 export function driveOrder() {
-  return driveNames as DriveName[];
+  return driveNames;
 }

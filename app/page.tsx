@@ -99,12 +99,14 @@ export default function HomePage() {
       tag: "Free Report",
       description: "Are your Surface and Innate persona identical? Open the report for detailed analysis.",
       isFree: true,
+      accessField: null,
     },
     {
       key: "relationship",
       label: "Ideal Relationship Analysis",
       tag: "Premium Report 01",
       description: "What is the drive profile of your ideal partner? Open the report to find out more.",
+      isFree: false,
       accessField: "has_access_report_1",
     },
     {
@@ -112,6 +114,7 @@ export default function HomePage() {
       label: "Energy Drain and Adaptation Analysis",
       tag: "Premium Report 02",
       description: "Do you feel that your efforts are wasted sometimes? Open the report to learn about your energy draining points.",
+      isFree: false,
       accessField: "has_access_report_2",
     },
     {
@@ -119,6 +122,7 @@ export default function HomePage() {
       label: "Occupation Analysis",
       tag: "Premium Report 03",
       description: "Identify occupations that fit your drive profiles.",
+      isFree: false,
       accessField: "has_access_report_3",
     },
   ] as const;

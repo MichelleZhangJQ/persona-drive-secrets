@@ -93,8 +93,8 @@ export function simulateProfessionFit(params: {
   }, 0);
 
   // 5) compute drain/transfer + adjusted surface (UPDATED fit-core signatures)
-  const surfaceDrain = computeSurfaceDrain({ paths });
-  const surfaceTransfer = computeSurfaceTransfer({ paths }); // kept in result for UI parity if needed
+  const surfaceDrain = computeSurfaceDrain({ innateAvg, paths });
+  const surfaceTransfer = computeSurfaceTransfer({ innateAvg, paths }); // kept in result for UI parity if needed
   const surfaceAdjusted = computeSurfaceAdjusted({ surfaceAvg, surfaceDrain });
 
   // 6) mismatch RAW from surfaceAdjusted (pre-aspiration) — legacy weighting (job-demand only)
@@ -201,7 +201,7 @@ export function simulateCustomJobFit(params: {
   const { user, jobName, jobDemand, major = "Custom" } = params;
 
   const drives = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     (drives as any)[d] = clamp(n(jobDemand[d] ?? 0), 0, 5);
   });
 

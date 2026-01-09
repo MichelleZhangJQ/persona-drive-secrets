@@ -2,23 +2,16 @@
 
 import { Wallet, Zap, Calendar } from "lucide-react";
 import PromoCodeInput from "@/components/PromoCodeInput";
-import { SupabaseClient } from "@supabase/supabase-js";
-
 interface Props {
   userCredits?: number;
   subExpiresAt?: string | null;
   onRefresh: () => void;
-  supabase: SupabaseClient; // Add this
-  user: any;               // Add this
 }
-
 
 export default function AccountAccessHub({ 
   userCredits, 
   subExpiresAt, 
-  onRefresh, 
-  supabase, 
-  user 
+  onRefresh
 }: Props) {
 
   const isSubscribed = subExpiresAt ? new Date(subExpiresAt) > new Date() : false;
@@ -48,8 +41,6 @@ export default function AccountAccessHub({
           {/* 2. Pass the props down to the child */}
           <PromoCodeInput 
             onRefresh={onRefresh} 
-            supabase={supabase} 
-            user={user} 
           />
           
         </div>

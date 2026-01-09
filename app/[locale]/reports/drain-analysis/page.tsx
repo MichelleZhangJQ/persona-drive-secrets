@@ -219,7 +219,7 @@ export default function DrainAnalysis() {
 
     setUiModel(ui);
 
-    const nextCards: DriveCard[] = (driveNames as DriveName[]).map((td) => {
+    const nextCards: DriveCard[] = driveNames.map((td) => {
       const row = ui.rows.find((r) => r.drive === td);
 
       const surfaceEnergy = n(row?.surfaceEnergy);
@@ -312,7 +312,7 @@ export default function DrainAnalysis() {
   const drainBars = useMemo(() => {
     if (!uiModel) return [];
 
-    const withPct = (driveNames as DriveName[]).map((drive) => {
+    const withPct = driveNames.map((drive) => {
       const row = uiModel.rows.find((r) => r.drive === drive);
       const surfaceEnergy = n(row?.surfaceEnergy);
       const drainedEnergy = n(row?.surfaceDrainTotal); // fit-core aggregate per td (via report model)
@@ -331,7 +331,7 @@ export default function DrainAnalysis() {
   const transferBars = useMemo(() => {
     if (!uiModel) return [];
 
-    const withPct = (driveNames as DriveName[]).map((drive) => {
+    const withPct = driveNames.map((drive) => {
       const row = uiModel.rows.find((r) => r.drive === drive);
       const surfaceEnergy = n(row?.surfaceEnergy);
       const transferEnergy = n(row?.surfaceTransferTotal); // fit-core aggregate per td (via report model)

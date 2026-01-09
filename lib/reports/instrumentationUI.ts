@@ -51,10 +51,10 @@ export function buildInstrumentationReportFlow(params: {
   const satisfactionVec = calculateUserDriveSatisfaction({ env, competence, selfInterest });
 
   // Core instrumentation routes (DEMOTION logic)
-  const routes = buildUserInstrumentationRoutes({ innateData, surfaceData });
+  const routes = buildUserInstrumentationRoutes({ innateData, surfaceData, imposedData });
 
   // Rank drives by innate preference
-  const sortedDrives = [...(driveNames as DriveName[])].sort((a, b) => (innateAvg[b] ?? 0) - (innateAvg[a] ?? 0));
+  const sortedDrives = [...driveNames].sort((a, b) => (innateAvg[b] ?? 0) - (innateAvg[a] ?? 0));
 
   let totalSuppression = 0;
   let totalPriority = 0;

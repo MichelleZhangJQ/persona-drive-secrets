@@ -44,7 +44,7 @@ type RankInfo = { rank: number; score: number };
 type RankMap = Record<DriveName, RankInfo>;
 
 function buildRankMap(vec: any): RankMap {
-  const order = driveNames as DriveName[];
+  const order = driveNames;
   const scored = order.map((d) => ({ drive: d, score: clamp(n(vec?.[d]), 0, 5) }));
 
   scored.sort((a, b) => {

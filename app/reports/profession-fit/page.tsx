@@ -84,7 +84,7 @@ type Mode = "aspiredMatch" | "jobMatch";
 function computeMatchScoreFromVectors(params: { eff: DriveVector; demand: DriveVector }): number {
   const { eff, demand } = params;
 
-  const ds = driveNames as DriveName[];
+  const ds = driveNames;
   const denom = ds.reduce((acc, d) => acc + n(demand[d]), 0);
   const equalW = 1 / ds.length;
 
@@ -131,7 +131,7 @@ export default function ProfessionFitReport() {
   const [customJobName, setCustomJobName] = useState("My Dream Job Drive Distribution");
   const [customDemand, setCustomDemand] = useState<Record<DriveName, number>>(() => {
     const v = emptyDriveVector(0);
-    (driveNames as DriveName[]).forEach((d) => ((v as any)[d] = 2));
+    driveNames.forEach((d) => ((v as any)[d] = 2));
     return v as any;
   });
   const [customResult, setCustomResult] = useState<FitResult | null>(null);
@@ -551,7 +551,7 @@ export default function ProfessionFitReport() {
                         </div>
 
                         <div className="space-y-2">
-                          {(driveNames as DriveName[]).map((d) => {
+                          {driveNames.map((d) => {
                             const surfaceAdjusted = clamp(n((debugTarget as any).surfaceAdjusted?.[d]), 0, 5);
                             const surfaceAspired = clamp(n((debugTarget as any).surfaceAdjustedAspired?.[d]), 0, 5);
 
@@ -602,7 +602,7 @@ export default function ProfessionFitReport() {
                             />
 
                             <div className="space-y-3">
-                              {(driveNames as DriveName[]).map((d) => (
+                              {driveNames.map((d) => (
                                 <div key={d} className="bg-white border border-slate-200 rounded-2xl p-4">
                                   <div className="flex items-center justify-between">
                                     <div className="text-[11px] font-black uppercase tracking-widest text-slate-700">{d}</div>

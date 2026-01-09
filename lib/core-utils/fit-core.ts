@@ -231,6 +231,7 @@ export type FitResult = {
 
   // --- canonical drain + adjusted surface ---
   surfaceDrain: DriveVector; // surfaceAvg(sd) * Σ(dr*lr), Σ capped to 1
+  surfaceTransfer?: DriveVector; // surfaceTransfer(td) derived from routes
   surfaceAdjusted: DriveVector; // clamp(surfaceAvg - surfaceDrain, 0..5)
 
   // --- aspirational adjusted surface ---
@@ -268,7 +269,7 @@ export function emptyDriveVector(fill = 0): DriveVector {
 
 /** Sum helpers */
 function sumDrives(v: DriveVector) {
-  return (driveNames as DriveName[]).reduce((acc, d) => acc + n(v[d]), 0);
+  return (driveNames).reduce((acc, d) => acc + n(v[d]), 0);
 }
 
 // -----------------------
@@ -277,14 +278,14 @@ function sumDrives(v: DriveVector) {
 export function computeInnateAvg(innateData: any): DriveVector {
   const v = (calculateInnateScores(innateData) || {}) as DriveVector;
   const out = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => ((out as any)[d] = clamp(n((v as any)[d]), 0, 5)));
+  (driveNames).forEach((d) => ((out as any)[d] = clamp(n((v as any)[d]), 0, 5)));
   return out;
 }
 
 export function computeSurfaceAvg(surfaceData: any): DriveVector {
   const v = (calculateSurfaceScores(surfaceData) || {}) as DriveVector;
   const out = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => ((out as any)[d] = clamp(n((v as any)[d]), 0, 5)));
+  (driveNames).forEach((d) => ((out as any)[d] = clamp(n((v as any)[d]), 0, 5)));
   return out;
 }
 
@@ -365,12 +366,12 @@ export function buildUserInstrumentationRoutes(params: {
   const dissatisfaction = calculateUserDriveDissatisfaction(paramsImposed);
 
   const routes: InstrumentRouteBase[] = [];
-  const sumInnateTotal = (driveNames as DriveName[]).reduce((acc, d) => acc + n(innateAvg[d]), 0);
+  const sumInnateTotal = (driveNames).reduce((acc, d) => acc + n(innateAvg[d]), 0);
 
-  for (const sd of driveNames as DriveName[]) {
+  for (const sd of driveNames) {
     const candidates: DriveName[] = [];
 
-    for (const td of driveNames as DriveName[]) {
+    for (const td of driveNames) {
       if (td === sd) continue;
 
       const innateSdOverTd = getDirectionalSdOverTdScore("innate", innateData, sd, td);
@@ -415,7 +416,7 @@ export function buildUserInstrumentationRoutes(params: {
   // Make Σ_td (pathDrain+pathTransfer) == clamp(surfaceAvg(td)-innateAvg(td), 0..5)
   // ------------------------------------------------------------
   const totalByTd: Record<string, number> = {};
-  (driveNames as DriveName[]).forEach((d) => (totalByTd[d] = 0));
+  (driveNames).forEach((d) => (totalByTd[d] = 0));
 
 
   routes.forEach((p) => {
@@ -424,7 +425,7 @@ export function buildUserInstrumentationRoutes(params: {
 
 
   const weightByTd: Record<string, number> = {};
-  (driveNames as DriveName[]).forEach((td) => {
+  (driveNames).forEach((td) => {
     const desired = clamp(n(surfaceAvg[td]) - n(innateAvg[td]), 0, 5);
     const denom = n(totalByTd[td]);
     weightByTd[td] = denom > 0 ? desired / denom : 0;
@@ -454,7 +455,7 @@ export function extractUserEnvCompetenceSelfInterest(imposedData: any): {
   const competence = emptyDriveVector(0);
   const selfInterest = emptyDriveVector(0);
 
-  (driveNames as DriveName[]).forEach((d, i) => {
+  (driveNames).forEach((d, i) => {
     const q1 = n(imposedData?.[`q${i * 3 + 1}_answer`]);
     const q2 = n(imposedData?.[`q${i * 3 + 2}_answer`]);
     const q3 = n(imposedData?.[`q${i * 3 + 3}_answer`]);
@@ -479,7 +480,7 @@ export function calculateUserDriveDissatisfaction(params: {
   const { env, competence, selfInterest } = params;
   const out = emptyDriveVector(0);
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const q1 = clamp(n(env[d]), 0, 5);
     const q2 = clamp(n(competence[d]), 0, 5);
     const q3 = clamp(n(selfInterest[d]), 0, 5);
@@ -506,7 +507,7 @@ export function calculateUserDriveSatisfaction(params: {
   const { env, competence, selfInterest } = params;
   const out = emptyDriveVector(0);
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const q1 = clamp(n(env[d]), 0, 5);
     const q2 = clamp(n(competence[d]), 0, 5);
     const q3 = clamp(n(selfInterest[d]), 0, 5);
@@ -527,7 +528,7 @@ export function simulateImposedFromProfession(params: { profDemand: DriveVector;
   const { profDemand, competence } = params;
   const out = emptyDriveVector(0);
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const q1 = clamp(n(profDemand[d]), 0, 5);
     const q2 = clamp(n(competence[d]), 0, 5);
     (out as any)[d] = clamp((q1 * q2) / 5, 0, 5);
@@ -547,14 +548,14 @@ export function computeSurfaceDrain(params: {
 
   const out = emptyDriveVector(0);
   const surfDrained: Record<string, number> = {};
-  (driveNames as DriveName[]).forEach((d) => (surfDrained[d] = 0));
+  (driveNames).forEach((d) => (surfDrained[d] = 0));
 
   (paths || []).forEach((p) => {
     surfDrained[p.td] = n(surfDrained[p.td]) + n(p.pathDrain); 
 
   });
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     (out as any)[d] = clamp(surfDrained[d], 0, 5);
   });
 
@@ -569,14 +570,14 @@ export function computeSurfaceTransfer(params: {
 
   const out = emptyDriveVector(0);
   const surfTransfer: Record<string, number> = {};
-  (driveNames as DriveName[]).forEach((d) => (surfTransfer[d] = 0));
+  (driveNames).forEach((d) => (surfTransfer[d] = 0));
 
 
   (paths || []).forEach((p) => {
     surfTransfer[p.td] = n(surfTransfer[p.td]) + n(p.pathTransfer);//* w;
   });
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     (out as any)[d] = clamp(surfTransfer[d], 0, 5);
   });
 
@@ -593,13 +594,13 @@ export function computeSurfaceValueTransfer(params: {
   const out = emptyDriveVector(0);
   const valuePaths = (paths || []).filter((p) => p.sd === valueName);
   const surfValueTransfer: Record<string, number> = {};
-  (driveNames as DriveName[]).forEach((d) => (surfValueTransfer[d] = 0));
+  (driveNames).forEach((d) => (surfValueTransfer[d] = 0));
 
   (valuePaths || []).forEach((p) => {
     surfValueTransfer[p.td] = n(surfValueTransfer[p.td]) + p.pathTransfer +p.pathDrain;
   });
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     (out as any)[d] = clamp(surfValueTransfer[d], 0, 5);
   });
 
@@ -613,7 +614,7 @@ export function computeSurfaceAdjusted(params: { surfaceAvg: DriveVector; surfac
   const { surfaceAvg, surfaceDrain } = params;
   const out = emptyDriveVector(0);
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const surf = clamp(n(surfaceAvg[d]), 0, 5);
     const drain = clamp(n(surfaceDrain[d]), 0, 5);
     (out as any)[d] = clamp(surf - drain, 0, 5);
@@ -640,11 +641,11 @@ export function computeMismatchFromEffectiveSurface(params: {
   const { effectiveSurface, profDemand, weightMode = "profDemand" } = params;
 
   const mismatch = emptyDriveVector(0);
-  const equalW = 1 / (driveNames as DriveName[]).length;
+  const equalW = 1 / (driveNames).length;
 
   const rawWeights = emptyDriveVector(0);
 
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const eff = clamp(n(effectiveSurface[d]), 0, 5);
     const demand = clamp(n(profDemand[d]), 0, 5);
 
@@ -655,7 +656,7 @@ export function computeMismatchFromEffectiveSurface(params: {
   const denom = sumDrives(rawWeights) || 0;
 
   let totalDeficit = 0;
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const w = denom > 0 ? n(rawWeights[d]) / denom : equalW;
     totalDeficit += Math.abs(n(mismatch[d])) * w;
   });
@@ -698,7 +699,7 @@ export function computeSurfaceAdjustedAspired(params: {
   const valueName = (params.valueDriveName ?? VALUE_DRIVE) as DriveName;
 
 
-  //const totalAspiration = (driveNames as DriveName[]).reduce((acc, d) => acc + n(effEnergyByTd[d]), 0);
+  //const totalAspiration = (driveNames).reduce((acc, d) => acc + n(effEnergyByTd[d]), 0);
   const parmtoPass ={valueName, paths}
   const totalAspiration =computeSurfaceValueTransfer(parmtoPass);
    
@@ -708,12 +709,12 @@ export function computeSurfaceAdjustedAspired(params: {
 
   if (!totalAspiration) {
     const out = emptyDriveVector(0);
-    (driveNames as DriveName[]).forEach((d) => ((out as any)[d] = clamp(n(surfaceAdjusted[d]), 0, 5)));
+    (driveNames).forEach((d) => ((out as any)[d] = clamp(n(surfaceAdjusted[d]), 0, 5)));
     return out;
   }
 
   const out = emptyDriveVector(0);
-  (driveNames as DriveName[]).forEach((d) => {
+  (driveNames).forEach((d) => {
     const base = clamp(n(surfaceAdjusted[d]), 0, 5);
     (out as any)[d] = clamp(base+totalAspiration[d],0,5);
 
