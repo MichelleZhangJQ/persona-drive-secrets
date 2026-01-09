@@ -403,12 +403,14 @@ export default function HomePage() {
       tagKey: "premium.cards.jung.tag",
       descriptionKey: "premium.cards.jung.description",
       isFree: true,
+      accessField: null,
     },
     {
       key: "relationship",
       labelKey: "premium.cards.relationship.label",
       tagKey: "premium.cards.relationship.tag",
       descriptionKey: "premium.cards.relationship.description",
+      isFree: false,
       accessField: "has_access_report_1",
     },
     {
@@ -416,6 +418,7 @@ export default function HomePage() {
       labelKey: "premium.cards.drain.label",
       tagKey: "premium.cards.drain.tag",
       descriptionKey: "premium.cards.drain.description",
+      isFree: false,
       accessField: "has_access_report_2",
     },
     {
@@ -423,6 +426,7 @@ export default function HomePage() {
       labelKey: "premium.cards.profession.label",
       tagKey: "premium.cards.profession.tag",
       descriptionKey: "premium.cards.profession.description",
+      isFree: false,
       accessField: "has_access_report_3",
     },
   ] as const;
