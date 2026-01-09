@@ -135,7 +135,7 @@ export default function HomePage() {
         {/* DYNAMIC TOP PANEL */}
         <section
           className={`mb-10 rounded-2xl bg-white/70 backdrop-blur-md p-8 shadow-sm border border-slate-200/60 transition-all duration-500 flex flex-col justify-center`}
-          style={{ height: `${panelHeightPx}px` }}
+          style={{ minHeight: `${panelHeightPx}px` }}
         >
           <div className="flex h-full flex-col justify-center">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">

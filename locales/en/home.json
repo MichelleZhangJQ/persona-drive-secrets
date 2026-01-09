@@ -54,7 +54,8 @@
     "cta": {
       "free": "Free Access",
       "open": "Open Report",
-      "unlock": "Unlock Access — $3.99"
+      "unlock": "Unlock Access — $3.99",
+      "saveAccount": "Save account to view this report"
     },
     "cards": {
       "jung": {

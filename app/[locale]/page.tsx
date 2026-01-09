@@ -439,8 +439,8 @@ export default function HomePage() {
       <main className="mx-auto max-w-6xl px-4 py-8 flex-grow">
         {/* DYNAMIC TOP PANEL */}
         <section
-          className="mb-10 rounded-2xl bg-white/70 backdrop-blur-md p-8 shadow-sm border border-slate-200/60 transition-all duration-500 flex flex-col justify-center overflow-hidden"
-          style={{ height: `${panelHeightPx}px` }}
+          className="mb-10 rounded-2xl bg-white/70 backdrop-blur-md p-8 shadow-sm border border-slate-200/60 transition-all duration-500 flex flex-col justify-center"
+          style={{ minHeight: `${panelHeightPx}px` }}
         >
           <div className="flex h-full flex-col justify-center">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">
@@ -470,17 +470,6 @@ export default function HomePage() {
             >
               {t(active.descriptionKey)}
             </p>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <Link
-                href={withLocale("/tester")}
-                className="rounded-full bg-emerald-600 text-white px-4 py-2 text-[11px] font-black uppercase tracking-widest shadow-sm hover:bg-emerald-700 transition-colors"
-              >
-                {t("dashboard.tester.cta")}
-              </Link>
-              <span className="text-[11px] font-medium text-slate-500">
-                {t("dashboard.tester.note")}
-              </span>
-            </div>
           </div>
         </section>
 

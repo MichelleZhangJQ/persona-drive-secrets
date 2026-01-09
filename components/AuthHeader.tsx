@@ -117,6 +117,16 @@ export function AuthHeader() {
     "bg-white text-slate-900 font-black -mb-px z-10 shadow-sm translate-y-[1px]";
   const tabInactive =
     "bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold";
+  const langBase =
+    "px-3 py-1 text-[10px] font-black uppercase tracking-widest transition-colors";
+  const langActive = "bg-slate-900 text-white";
+  const langInactive = "text-slate-500 hover:bg-slate-100";
+
+  const switchLocale = (nextLocale: "en" | "zh") => {
+    document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000`;
+    const nextPath = withLocale(stripLocale(pathname || "/"), nextLocale);
+    router.push(nextPath);
+  };
 
   // ✅ Active route detection for nav pills
   const activeTab = useMemo<"main" | "theories" | "orders">(() => {
@@ -272,25 +282,21 @@ export function AuthHeader() {
 
         {/* Right: Auth area */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-600">
-            <select
-              aria-label={t(headerI18n.lang.selectorLabel)}
-              value={locale}
-              onChange={(event) => {
-                const nextLocale = event.target.value;
-                document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000`;
-                const nextPath = withLocale(stripLocale(pathname || "/"), nextLocale);
-                router.push(nextPath);
-              }}
-              className="bg-transparent focus:outline-none cursor-pointer"
+          <div className="flex items-center rounded-full border border-slate-200 bg-white p-1">
+            <button
+              type="button"
+              onClick={() => switchLocale("en")}
+              className={`${langBase} ${locale === "en" ? langActive : langInactive} rounded-full`}
             >
-              <option value="en">
-                {headerI18n.lang.english.en} / {headerI18n.lang.english.zh}
-              </option>
-              <option value="zh">
-                {headerI18n.lang.chinese.en} / {headerI18n.lang.chinese.zh}
-              </option>
-            </select>
+              English
+            </button>
+            <button
+              type="button"
+              onClick={() => switchLocale("zh")}
+              className={`${langBase} ${locale === "zh" ? langActive : langInactive} rounded-full`}
+            >
+              中文
+            </button>
           </div>
           <AuthButton />
         </div>
