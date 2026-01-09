@@ -1,0 +1,59 @@
+{
+  "orders": {
+    "loading": {
+      "title": "正在加载订单..."
+    },
+    "auth": {
+      "signIn": "请先登录以查看订单。"
+    },
+    "header": {
+      "title": "订单",
+      "subtitle": "近 6 个月的购买记录",
+      "back": "返回首页"
+    },
+    "tabs": {
+      "all": "全部",
+      "paid": "已支付",
+      "pending": "待支付",
+      "canceled": "已取消",
+      "failed": "失败"
+    },
+    "empty": {
+      "title": "暂无订单",
+      "body": "当你购买报告或会员后，会显示在这里。"
+    },
+    "card": {
+      "orderId": "订单",
+      "created": "创建时间",
+      "paidAt": "支付时间",
+      "subtotal": "小计",
+      "credits": "已使用余额",
+      "due": "应付金额",
+      "provider": "支付渠道",
+      "noRefunds": "不支持退款。",
+      "cancel": "取消订单",
+      "canceling": "取消中...",
+      "itemsTitle": "订单明细",
+      "hideItems": "收起明细"
+    },
+    "item": {
+      "report": "报告",
+      "membership": "会员",
+      "quantity": "数量",
+      "price": "价格",
+      "months": "月数",
+      "expiresAt": "有效期至"
+    },
+    "status": {
+      "paid": "已支付",
+      "pending": "待支付",
+      "canceled": "已取消",
+      "failed": "失败",
+      "refunded": "已退款"
+    },
+    "errors": {
+      "loadFailed": "订单加载失败，请刷新后重试。",
+      "cancelFailed": "取消订单失败，请稍后再试。"
+    }
+  }
+}

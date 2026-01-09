@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description: "Explore your Public, Private, and Innate personas.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

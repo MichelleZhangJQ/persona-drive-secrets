@@ -1,0 +1,9 @@
+{
+  "overall": {
+    "status": {
+      "cached": "已加载缓存结果。",
+      "recomputed": "结果已重新计算。",
+      "upsertFailed": "更新缓存结果失败。"
+    }
+  }
+}

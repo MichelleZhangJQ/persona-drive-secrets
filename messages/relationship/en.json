@@ -1,0 +1,127 @@
+{
+  "relationship": {
+    "loading": {
+      "title": "Computing Ideal Partner Profile..."
+    },
+    "accessRestricted": "Access Restricted",
+    "missingTests": {
+      "title": "Complete all tests first",
+      "subtitle": "Relationship analysis needs your Imposed, Surface, and Innate persona results.",
+      "imposed": "Imposed Test",
+      "surface": "Surface Test",
+      "innate": "Innate Test"
+    },
+    "errors": {
+      "unavailableTitle": "Unable to load report",
+      "unavailableBody": "Please refresh and try again.",
+      "missingPersona": "Missing persona data (innate or surface). Please complete the tests first."
+    },
+    "status": {
+      "cached": "Derived data loaded from database",
+      "recomputed": "Derived data recalculated",
+      "upsertFailed": "Derived data saved locally (sync pending)",
+      "upsertDetailFallback": "database not responding"
+    },
+    "header": {
+      "titleStart": "Ideal Partner",
+      "titleAccent": "Profile",
+      "subtitle": "Partner drive priorities inferred from your surface + innate needs",
+      "dashboardCta": "Dashboard"
+    },
+    "howToRead": {
+      "title": "How to read",
+      "paragraphs": [
+        "On this page, you’ll first see your <strong>Ideal Partner Drive Profile</strong> as a bar chart.",
+        "Then—starting with the <strong>most important partner drives</strong>—each section explains:",
+        "If a partner drive is marked <strong>Capped</strong>, it means <strong>your own profile sets an upper limit</strong> on how intense that partner drive should be. In other words, “lower” can be intentional—because too much of that partner drive would backfire for you.",
+        "This report doesn’t claim that partners with different profiles can’t lead to a great relationship. It simply highlights the traits that are <em>most consistently meaningful for you</em>, given your current patterns. The rankings also aren’t absolute—real life is complex, and different situations can bring out different needs.",
+        "In this model, we treat <strong>Care</strong>, <strong>Exploration</strong>, <strong>Affiliation</strong>, and <strong>Value</strong> as <strong>innate drives</strong>, and <strong>Achievement</strong>, <strong>Dominance</strong>, and <strong>Pleasure</strong> as <strong>surface drives</strong>. Your ideal partner drive levels are then estimated from your <strong>innate</strong> and <strong>surface</strong> persona profiles, depending on which of your needs each partner drive is supporting."
+      ],
+      "bullets": [
+        "what that <strong>partner drive</strong> tends to provide for you,",
+        "which of <strong>your drives</strong> it supports, and",
+        "where those drives rank in your <strong>Innate</strong> and <strong>Surface</strong> profiles."
+      ]
+    },
+    "bars": {
+      "surfaceTitle": "Ideal Partner Surface Profile",
+      "innateTitle": "Ideal Partner Innate Profile",
+      "surfaceNote": "Ranked in the same order as the innate chart. Scale is 0–5.",
+      "innateNote": "Ranked in the same order as the surface chart. Scale is 0–5.",
+      "surfaceExplanation": "These are estimated traits for your partner’s surface expressed drives. We highlight Dominance, Achievement, Pleasure, and Affiliation as the surface-prioritized set here. Your partner’s expressed strengths in these areas shape how you interact with each other. The remaining drives are shown in grey.",
+      "innateExplanation": "These are estimated traits for your partner’s innate style: we highlight Exploration, Value, and Care as innately important in relationships. The other drives are shown in grey using the same estimated values—because their expression can be more situational or environment-dependent."
+    },
+    "insights": {
+      "title": "Partner drive explanations",
+      "subtitle": "In the following, partner drives are listed by the order of their importance to you."
+    },
+    "card": {
+      "partnerDriveLabel": "Partner drive",
+      "capped": "Capped",
+      "score": "Score",
+      "notes": "Notes",
+      "supportedTitle": "Supported drives and your rankings",
+      "supportedDrive": "Supported Drive",
+      "innateRank": "Innate Persona Ranking",
+      "surfaceRank": "Surface Persona Ranking",
+      "supportType": "Support Type",
+      "noSupported": "No supported drives listed for this partner drive."
+    },
+    "supportType": {
+      "both": "Innate + Surface",
+      "innate": "Innate",
+      "surface": "Surface",
+      "none": "—"
+    },
+    "scripts": {
+      "Exploration": "If your partner is explorative—curious, flexible, and able to take your perspective—you’re much more likely to feel understood instead of boxed in. This matters most for your innate Care, Value, and Exploration needs: you’re not only looking for someone who behaves “correctly,” but someone who can truly see what you need emotionally, understand what you care about, and engage with your ideas in a way that feels alive and supportive. When your values are challenged by a complicated world, this kind of partner helps you think clearly, stay open, and find workable paths forward rather than getting stuck. It also supports your surface Dominance: when decisions or conflict show up, an explorative partner offers options and reframes—so the relationship doesn’t turn into a rigid standoff.",
+      "Achievement": "If your partner is reliable and competent—good at follow-through, structure, and practical stability—it takes a lot of pressure off the relationship. This strongly supports your innate Care and Affiliation needs, because real devotion and real connection take time, energy, attention, and resources to sustain. A capable partner helps make that sustainable rather than draining. It also supports your innate Exploration by creating breathing room: when life is steadier, it’s easier to learn, reflect, and grow without constantly feeling rushed or overloaded. However, this requirement is mitigated by your own ability in achieving goals: when you are quite capable yourself, you don't need as much support from your partner.",
+      "Value": "If your partner has a strong Value drive—meaning they take commitments seriously, respect boundaries, and try to live by principles—it helps you feel safe and steady. This supports your innate Affiliation needs because maintaining friendships, community, and meaningful ties requires consistency and follow-through, not just good intentions. It also supports your surface Dominance and Achievement: a principled partner is less likely to undermine what you’re building, and more likely to keep disagreements grounded in shared rules rather than turning them into personal attacks.\n\nAt the same time, Value can be intense. When both people feel strongly about order, beliefs, or “the right way,” disagreements can become heavier than they need to be. So the ideal isn’t “more Value no matter what”—it’s compatible Value: enough to be trustworthy and respectful, but flexible enough to negotiate differences without turning them into chronic stress. That’s why your ideal partner Value level can move inversely with your own Value intensity: when your Value drive is already strong, you may do best with a partner whose Value is steady but not rigid.",
+      "Care": "If your partner is caring and emotionally attuned, it directly meets your deepest need to feel safe, seen, and held. This is especially important for your innate Care: you’re not just looking for “nice behavior,” you’re looking for real responsiveness—someone who notices you, takes your feelings seriously, and shows up when it matters. It also supports your surface Pleasure: when you feel cared for, it’s easier to relax, enjoy closeness, and keep warmth in the relationship instead of living in tension.",
+      "Dominance": "If your partner is decisive—able to lead, set direction, and create structure—it helps the relationship stay clear and not drift into endless uncertainty. This can be especially helpful for your innate Exploration: a decisive partner can bring closure, help choose a direction, and prevent your curiosity from turning into an exhausting loop of “trying everything forever.”\n\nBut Dominance also has a downside: too much can feel restrictive. The best version is steady structure without control—a partner who can set boundaries and make decisions, while still respecting your agency. In that sense, partner Dominance works best when it’s balanced with your own Dominance, so neither person feels overrun and the relationship stays harmonious.",
+      "Affiliation": "If your partner is strong in Affiliation—relationship-skilled, good at reconnecting, and able to repair after conflict—it reduces the emotional “cost” of friction. When tension happens (and it will), this kind of partner doesn’t let disconnection become the default. Instead, they soften, reach back, and help the relationship return to safety. In your system, this especially supports your surface Dominance: it helps conflict stay manageable so decision-making and boundaries don’t turn into long-lasting coldness.",
+      "Pleasure": "If your partner is high in Pleasure—playful, light, and good at enjoying life—it keeps the relationship emotionally rewarding day-to-day. This supports your surface Pleasure by bringing ease back into closeness, so the bond isn’t only about responsibility, problem-solving, or pushing forward. It’s the difference between “we manage life together” and “we actually enjoy each other.”"
+    },
+    "capReasons": {
+      "value": {
+        "byValue": "when your partner’s need to set order and act by their Values is too strong, it could feel rigid or more conflict-prone if your own Value needs are already strong",
+        "byExploration": "when your partner’s need to set order and act by their Values is too strong, it could feel morally or structurally “locking” if you strongly need flexibility in plans, time, and schedule for Exploration"
+      },
+      "dominance": {
+        "bySurfaceDominance": "a partner with very strong decision-making and Dominance could trigger power struggles when your own need to make decisions is already strong",
+        "byExploration": "when a partner’s Dominance and decision-making are too strong, it could feel restrictive for your strong need for flexibility and multiple perspectives in Exploration"
+      },
+      "summary": {
+        "value": "Partner Value is capped by whichever is stricter: your innate Value ceiling or your innate Exploration ceiling.",
+        "dominance": "Partner Dominance is capped by whichever is stricter: your surface Dominance ceiling or your innate Exploration ceiling."
+      }
+    },
+    "cap": {
+      "component": {
+        "withRank": "{basis} {drive} (rank #{rank}, {score})",
+        "noRank": "{basis} {drive}"
+      },
+      "by": {
+        "single": "Capped by (6 - your {a} drive)",
+        "double": "Capped by (6 - your {a} and 6 - your {b} drive)",
+        "multi": "Capped by (6 - your {list}), and (6 - your {last} drive)",
+        "fallback": "Capped by your {label}"
+      },
+      "paragraph": {
+        "withReason": "Your partner’s {partner} is capped by your {label} drive, because {reason}.",
+        "noReason": "Your partner’s {partner} is capped by your {label} drive."
+      }
+    },
+    "basis": {
+      "innate": "innate",
+      "surface": "surface"
+    },
+    "footer": {
+      "titleStart": "Next",
+      "titleAccent": "Steps",
+      "body": "Use these as relationship “anchors”: they describe what tends to stabilize you. If something is marked “capped,” it’s not a lack—it’s your system saying “more of this would backfire.”",
+      "status": "Ideal partner profile computed.",
+      "dashboardCta": "Dashboard"
+    }
+  }
+}

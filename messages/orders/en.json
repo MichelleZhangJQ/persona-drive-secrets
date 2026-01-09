@@ -1,0 +1,59 @@
+{
+  "orders": {
+    "loading": {
+      "title": "Loading orders..."
+    },
+    "auth": {
+      "signIn": "Please sign in to view orders."
+    },
+    "header": {
+      "title": "Orders",
+      "subtitle": "Purchase history for the last 6 months",
+      "back": "Back to Dashboard"
+    },
+    "tabs": {
+      "all": "All",
+      "paid": "Paid",
+      "pending": "Pending",
+      "canceled": "Canceled",
+      "failed": "Failed"
+    },
+    "empty": {
+      "title": "No orders yet",
+      "body": "When you purchase a report or membership, it will appear here."
+    },
+    "card": {
+      "orderId": "Order",
+      "created": "Created",
+      "paidAt": "Paid",
+      "subtotal": "Subtotal",
+      "credits": "Credits Applied",
+      "due": "Amount Due",
+      "provider": "Provider",
+      "noRefunds": "Refunds are not available.",
+      "cancel": "Cancel Order",
+      "canceling": "Canceling...",
+      "itemsTitle": "Items",
+      "hideItems": "Hide Items"
+    },
+    "item": {
+      "report": "Report",
+      "membership": "Membership",
+      "quantity": "Qty",
+      "price": "Price",
+      "months": "Months",
+      "expiresAt": "Granted Until"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "canceled": "Canceled",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "errors": {
+      "loadFailed": "Unable to load orders. Please refresh and try again.",
+      "cancelFailed": "Unable to cancel the order. Please try again."
+    }
+  }
+}

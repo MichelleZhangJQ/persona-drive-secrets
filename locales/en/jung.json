@@ -1,0 +1,139 @@
+{
+  "jung": {
+    "header": {
+      "titleStart": "Jung",
+      "titleAccent": "Persona Analysis",
+      "subtitle": "Surface vs. Innate persona through Jung-style dimensions"
+    },
+    "status": {
+      "cached": "Derived data loaded from database",
+      "recomputed": "Derived data recalculated",
+      "upsertFailed": "Derived data saved locally (sync pending)",
+      "upsertDetailFallback": "database not responding"
+    },
+    "missingTests": {
+      "title": "Complete all tests first",
+      "subtitle": "Jung analysis needs your Imposed, Surface, and Innate persona results.",
+      "imposed": "Imposed Test",
+      "surface": "Surface Test",
+      "innate": "Innate Test"
+    },
+    "auth": {
+      "title": "Sign in to view this report",
+      "subtitle": "Jung analysis is free after login.",
+      "cta": "Sign in / Sign up",
+      "upgradeCta": "Save Account",
+      "loginCta": "Log In"
+    },
+    "errors": {
+      "unavailableTitle": "Report unavailable",
+      "unavailableBody": "Unable to load persona-derived data. Please refresh and try again.",
+      "fallbackBody": "Unable to build the Jung analysis report. Please refresh and try again.",
+      "sourceNote": "This page reads from innate-persona and surface-persona using user_id."
+    },
+    "links": {
+      "dashboard": "Dashboard",
+      "tests": "Go to Tests",
+      "theory": "Detailed Theory ->"
+    },
+    "howToUse": {
+      "title": "How to use",
+      "body": "This report separates outward behavior tendencies (often captured in surface persona) from deeper cognitive and organizational tendencies (often captured in innate persona), then explains each dimension with clear reasoning."
+    },
+    "intro": {
+      "title": "Jung Personality Overview",
+      "subtitle": "A drive-based read of classic Jung dimensions",
+      "body": "This report translates your persona drives into Jung’s four psychological dimensions. We separate outward behavior tendencies from inner cognitive organization to show where your surface and innate systems align or diverge.",
+      "panel1Title": "01. Surface vs. Innate",
+      "panel1Body": "Surface persona reflects your visible behavior and social strategy. Innate persona reflects the deeper default patterns you return to when you are not adapting.",
+      "panel2Title": "02. Four Jung Dimensions",
+      "panel2Body": "We map Energy & Attention, Information Processing, Decision Style, and Lifestyle to show how your drives organize attention, decisions, and action."
+    },
+    "overview": {
+      "quickOverview": "Quick Overview",
+      "subscriptMeaning": "Subscript Meaning"
+    },
+    "overviewText": {
+      "surface1": "In our framework, Surface Persona is closest to Jung’s ego-facing layer: your conscious, deliberate way of showing up—how you explain yourself, steer behavior, and manage impressions. Jung also emphasized that the ego sits atop a much larger unconscious (including disowned traits, unrealized potentials, and autonomous tendencies).",
+      "surface2": "Our Innate Persona is not the unconscious, and we don’t call it an “unconscious persona.” Instead, it’s the hidden-but-knowable baseline: stable underlying preferences and drive-structure that shape what feels natural and sustaining, often outside awareness unless measured directly. Many people miss this baseline because their Surface Persona is trained by roles, demands, and adaptation.",
+      "surface3": "When the Surface Persona becomes too dominant—when a role becomes “who I am”—Jung’s warning applies: what doesn’t fit gets pushed down and may return as shadow reactions (friction, defensiveness, compulsive patterns). Growth, in Jung’s view, is individuation: bringing the surface self into better alignment with what lies underneath, so the mask stays useful—but not mistaken for the whole person.",
+      "energyTitle": "Energy & Attention (I / E)",
+      "energyBody": "Introversion means you recharge by going inward and prefer depth over constant stimulation. Extroversion means you recharge through outward activity and gain energy from people and action.",
+      "perceptionTitle": "Information Processing (N / S)",
+      "perceptionBody": "Intuition looks for patterns and future possibilities. Sensing focuses on concrete details and what is real right now.",
+      "judgmentTitle": "Decision Style (T / F)",
+      "judgmentBody": "Thinking decides by logic and consistency. Feeling decides by values and how choices affect people.",
+      "orientationTitle": "Lifestyle (J / P)",
+      "orientationBody": "Judging prefers plans and closure. Perceiving prefers keeping options open and adapting as new information appears."
+    },
+    "codes": {
+      "title": "Innate & Surface Codes",
+      "subtitle": "Surface (behavior-facing) vs. Innate (core-facing)",
+      "surfaceFallback": "Surface Persona",
+      "innateFallback": "Innate Persona"
+    },
+    "mapped": {
+      "title": "Mapped Behavior Jung Personality Traits",
+      "panelTitle": "Behavior-test comparison",
+      "estimateLabel": "Estimated behavior-based result",
+      "mappingLogic": "Mapping Logic",
+      "mappingTitle": "How this mapping is built",
+      "mapEnergy": "Energy & Attention (I/E) is taken from your Surface Persona.",
+      "mapPerception": "Information Processing (N/S) is taken from your Innate Persona.",
+      "mapJudgment": "Decision Style (T/F) is taken from your Surface Persona.",
+      "mapOrientation": "Lifestyle (J/P) is taken from your Innate Persona."
+    },
+    "dimension": {
+      "badge": "Dimension {index} / 4",
+      "surfaceLabel": "Surface Dimension",
+      "innateLabel": "Innate Dimension",
+      "archetype": "Archetype",
+      "surfaceNote": "This is the surface adaptation you use to navigate the outside world.",
+      "innateNote": "This is the baseline preference that feels natural and sustaining.",
+      "analysisTitle": "Analysis"
+    },
+    "subscript": {
+      "axisTitles": {
+        "energy": "Energy & Attention (I/E)",
+        "perception": "Information Processing (N/S)",
+        "judgment": "Decision Style (T/F)",
+        "orientation": "Lifestyle (J/P)"
+      },
+      "adaptive": {
+        "energy": "Your I/E balance is adaptive: extroverted drives (Dominance, Pleasure, Affiliation) are balanced with introverted drives (Exploration, Care), so your socialization follows a more complex, context-driven pattern.",
+        "perception": "Your N/S balance is adaptive and shifts with context, so you can move between concrete details and broader patterns as the situation requires.",
+        "judgment": "Your T/F balance is adaptive and shifts with context, so you can move between logic-first and value-first decisions depending on stakes and people.",
+        "orientation": "Your J/P balance is adaptive: goal/structure drives are balanced with exploration and flexibility, so you alternate between closure and openness based on what the moment needs."
+      },
+      "map": {
+        "I_care": "Your Introvert tendency is driven by a strong Care drive.",
+        "I_exploration": "Your Introvert tendency is driven by a strong Exploration drive.",
+        "E_dominance": "Your Extrovert tendency is driven by a strong Dominance drive.",
+        "E_pleasure": "Your Extrovert tendency is driven by a strong Pleasure drive.",
+        "E_affiliation": "Your Extrovert tendency is driven by a strong Affiliation drive.",
+        "E_extroversion": "Your Extrovert tendency is driven by outward activation and impact.",
+        "S_detail": "Your Sensing tendency is driven by detail-focus and precision.",
+        "S_practical": "Your Sensing tendency is driven by practical, concrete focus.",
+        "N_vision": "Your Intuition tendency is driven by big-picture vision.",
+        "N_patterns": "Your Intuition tendency is driven by pattern-seeking.",
+        "T_logic": "Your Thinking tendency is driven by logic and structure.",
+        "T_principles": "Your Thinking tendency is driven by principled consistency.",
+        "F_care": "Your Feeling tendency is driven by care and empathy.",
+        "F_values": "Your Feeling tendency is driven by values and human impact.",
+        "J_goal": "Your Judging tendency is driven by goal focus and closure.",
+        "J_process": "Your Judging tendency is driven by process structure.",
+        "P_curious": "Your Perceiving tendency is driven by curiosity and exploration.",
+        "P_fun": "Your Perceiving tendency is driven by spontaneous experience-seeking."
+      },
+      "fallback": "This subscript reflects the drive pattern behind this letter."
+    },
+    "footer": {
+      "titleStart": "Advisory",
+      "titleAccent": "Note",
+      "bodyPrefix": "We derive your surface and innate personality codes based on Jung's original description of personality traits and modern research linking behavior traits and drives. It is not related to other personality tests such as MBTI. To learn more about what causes the difference between your surface and innate persona, please check out our",
+      "bodyLink": "drain analysis report",
+      "bodySuffix": ".",
+      "dashboardCta": "Return to Main Page"
+    }
+  }
+}

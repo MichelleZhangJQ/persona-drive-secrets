@@ -1,0 +1,138 @@
+{
+  "jung": {
+    "header": {
+      "titleStart": "荣格",
+      "titleAccent": "人格分析",
+      "subtitle": "在荣格行为维度上对比表层人格与内在人格"
+    },
+    "status": {
+      "cached": "已从数据库加载派生数据",
+      "recomputed": "已重新计算派生数据",
+      "upsertFailed": "派生数据已本地保存（等待同步）",
+      "upsertDetailFallback": "数据库无响应"
+    },
+    "missingTests": {
+      "title": "请先完成所有测试",
+      "subtitle": "荣格分析需要你的外在、表层与内在测试结果。",
+      "imposed": "外在人格测试",
+      "surface": "表层人格测试",
+      "innate": "内在人格测试"
+    },
+    "auth": {
+      "title": "登录后查看该报告",
+      "subtitle": "登录后可免费查看荣格分析。",
+      "cta": "登录 / 注册",
+      "upgradeCta": "保存账号",
+      "loginCta": "登录"
+    },
+    "errors": {
+      "unavailableTitle": "报告暂不可用",
+      "unavailableBody": "无法加载派生数据，请刷新后重试。",
+      "fallbackBody": "无法生成荣格分析报告，请刷新后重试。"
+    },
+    "links": {
+      "dashboard": "返回主页",
+      "tests": "前往测试",
+      "theory": "详细理论 ->"
+    },
+    "howToUse": {
+      "title": "阅读方式",
+      "body": "本报告将外在行为倾向（通常体现在表层人格）与更深层的认知与行为组织倾向（通常体现在内在人格）区分开来，并逐一解释四个维度。"
+    },
+    "intro": {
+      "title": "荣格人格概览",
+      "subtitle": "以驱动力为基础的荣格维度解读",
+      "body": "本报告把你的驱动结构映射到四个心理维度（荣格的三个心理维度加上判定/观望 个维度），区分外在行为与内在认知和行为组织方式，探寻表层与内在是否一致或存在差异。",
+      "panel1Title": "01. 表层与内在",
+      "panel1Body": "表层人格反映你对外展示的行为与适应环境策略；内在人格反映在不需要适应环境时回归的深层驱动模式。",
+      "panel2Title": "02. 四大荣格维度",
+      "panel2Body": "我们用能量取向、信息处理、决策风格，与行为组织四个维度，呈现驱动力结构如果影响你的决策与行动方式。"
+    },
+    "overview": {
+      "quickOverview": "快速概览",
+      "subscriptMeaning": "下标含义"
+    },
+    "subscript": {
+      "axisTitles": {
+        "energy": "能量方向",
+        "perception": "信息处理",
+        "judgment": "决策风格",
+        "orientation": "行为管理"
+      },
+      "adaptive": {
+        "energy": "该维度为混合型：会随情境在两端切换。",
+        "perception": "该维度为混合型：会随任务在细节与模式间切换。",
+        "judgment": "该维度为混合型：会在逻辑与价值间切换。",
+        "orientation": "该维度为混合型：会在计划与开放之间切换。"
+      },
+      "map": {
+        "I_care": "内倾_亲密守护 (I_care)",
+        "I_exploration": "内倾_探索创新 (I_exploration)",
+        "E_dominance": "外向_主导决策 (E_dominance)",
+        "E_pleasure": "外向_娱乐享受 (E_pleasure)",
+        "E_affiliation": "外向_人际关系 (E_affiliation)",
+        "E_extroversion": "外向_外向激活 (E_extroversion)",
+        "S_detail": "感知_精准 (S_detail)",
+        "S_practical": "感知_务实 (S_practical)",
+        "N_vision": "直觉_未来感知 (N_vision)",
+        "N_patterns": "直觉_抽象规律 (N_patterns)",
+        "T_logic": "思考_逻辑构建 (T_logic)",
+        "T_principles": "思考_原则策略 (T_principles)",
+        "F_care": "情感_亲密守护 (F_care)",
+        "F_values": "情感_价值伦理 (F_values)",
+        "J_goal": "判定_目标推进 (J_goal)",
+        "J_process": "判定_流程秩序 (J_process)",
+        "P_curious": "观望_好奇观望 (P_curious)",
+        "P_fun": "观望_随性体验 (P_fun)"
+      },
+      "fallback": "（暂无说明）"
+    },
+    "overviewText": {
+      "surface1": "在我们的构架中，表层人格最接近荣格所说的“面向自我”的层面：是你在明意识层面如何呈现自己、解释自己、引导行为与管理形象的方式。荣格也强调自我位于更庞大的无意识之上（包含被压抑的特质、未实现的潜能与自主倾向）。",
+      "surface2": "区别于荣格，在我们的语境里，内在人格并不是无意识本身，也不称为“无意识人格”。它是可被认知的稳定深层的偏好与驱动力结构，决定什么是最自然的本我、最能让你不费力的生活的驱动力结构。这个内在自我驱动力结构通常是不外显的，只有通过我们的测量才可以揭示。很多人忽略这层，因为我们的表层人格已被角色、环境要求与适应训练，会覆盖这层人格。",
+      "surface3": "当表层人格过于强势，当角色变成我的代表时，荣格的警示：不被允许的部分会被压抑下去，并以阴影反应回归（内耗、防御、强迫）。成长是个体化：让表层自我更诚实地贴近内在本我，使面具依然有用，但不再被误认为全部。",
+      "energyTitle": "能量取向（内倾 / 外倾 I/N）",
+      "energyBody": "内倾代表通过向内的活动恢复能量、偏好深度与安静；外倾代表通过外在行动，在与人群互动与行动中获得能量。",
+      "perceptionTitle": "信息处理模式（直觉 / 感知 N/S）",
+      "perceptionBody": "直觉关注抽象规律与未来可能性；感知关注具体细节与当下现实。",
+      "judgmentTitle": "决策风格（思考 / 情感 T/F）",
+      "judgmentBody": "思考以逻辑与一致性决策；情感以价值与人际影响决策。",
+      "orientationTitle": "行为管理（判定 / 观望 J/P）",
+      "orientationBody": "判定式偏好计划与收敛；观望偏好保留选择并根据新信息调整。"
+    },
+    "codes": {
+      "title": "内在与表层人格代码",
+      "subtitle": "表层（行为面向） vs. 内在（核心面向）",
+      "surfaceFallback": "表层人格",
+      "innateFallback": "内在人格"
+    },
+    "mapped": {
+      "title": "预测的荣格行为特征",
+      "panelTitle": "行为测试对比",
+      "estimateLabel": "行为测试预测结果",
+      "mappingLogic": "映射方法",
+      "mappingTitle": "映射规则说明",
+      "mapEnergy": "能量取向（内倾/外倾 I/N）取自表层人格。",
+      "mapPerception": "信息处理方式（直觉/感知 N/S）取自内在人格。",
+      "mapJudgment": "决策风格（理性/情感 T/F）取自表层人格。",
+      "mapOrientation": "行为管理（判定/观望 J/P）取自内在人格。"
+    },
+    "dimension": {
+      "badge": "维度 {index} / 4",
+      "surfaceLabel": "表层维度",
+      "innateLabel": "内在维度",
+      "archetype": "原型",
+      "surfaceNote": "这是你用来适应外部世界的表层策略性驱动力结构。",
+      "innateNote": "这是更自然且更稳定的内在驱动力结构。",
+      "analysisTitle": "分析"
+    },
+    "footer": {
+      "titleStart": "重要",
+      "titleAccent": "说明",
+      "bodyPrefix": "我们依据荣格对人格特质的原始描述，以及现代研究对行为特征与驱动力之间联系的解释，推导你的表层与内在人格代码。这与 MBTI 等其他人格测试无关。若想了解表层与内在人格差异的原因，请查看我们的",
+      "bodyLink": "能量消耗分析报告",
+      "bodySuffix": "。",
+      "dashboardCta": "返回主页"
+    }
+  }
+}

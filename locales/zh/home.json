@@ -1,0 +1,223 @@
+{
+  "home": {
+    "dashboard": {
+    "header": "信息主页",
+    "welcome": {
+      "title": "欢迎信息",
+      "description": "欢迎来到隐秘人格分析网页。请完成下面的一到四步，这样就可以了解你心理结构的不同层面。"
+    },
+    "imposed": {
+      "title": "外在人格",
+      "description": "分析环境对你的各种驱动力的强度要求。这一层揭示职业与家庭对你的压力，以及你的适应程度。"
+    },
+    "surface": {
+      "title": "表层人格",
+      "description": "探索你日常生活中怎样分配能量给不同驱动力，而这个驱动力结构形成了你对自我人格的认知。"
+    },
+    "innate": {
+      "title": "内在人格",
+      "description": "揭示你潜在的驱动力能量分配结构。"
+    },
+    "report": {
+      "title": "综合报告",
+      "description": "整合所有人格层面，呈现完整的心理蓝图。"
+    },
+    "tester": {
+      "cta": "加入志愿测试者",
+      "note": "完成一套短测试包即可解锁 10 天游览权限。"
+    }
+  },
+    "progress": {
+    "title": "完成测试并获取总结",
+    "step": "步骤 {number}",
+    "hint": "先完成外在，再完成表层与内在，最后查看综合报告。",
+    "steps": {
+      "imposed": { "label": "外在人格", "tag": "环境" },
+      "surface": { "label": "表层人格", "tag": "日常策略" },
+      "innate": { "label": "内在人格", "tag": "基准线" },
+      "report": { "label": "综合报告", "tag": "总结" }
+    }
+  },
+  "premium": {
+    "title": "高级分析",
+    "preview": {
+      "drain": {
+        "totalDrain": "总内耗值",
+        "totalAdaptation": "总补偿值"
+      },
+      "jung": {
+        "overall": "综合人格",
+        "surface": "表层人格",
+        "innate": "内在人格"
+      }
+    },
+    "status": {
+      "free": "免费",
+      "granted": "已开通",
+      "locked": "未解锁"
+    },
+    "cta": {
+      "free": "免费访问",
+      "open": "打开报告",
+      "unlock": "解锁访问 — $3.99",
+      "loginFree": "注册/登录后可免费查看",
+      "saveAccount": "保存账号后可免费查看"
+    },
+    "cards": {
+      "jung": {
+        "label": "荣格人格分析",
+        "tag": "免费报告",
+        "description": "你的内在人格和表层人格相同吗？如果不同，这对你意味着什么？打开报告了解详情。"
+      },
+      "relationship": {
+        "label": "理想伴侣驱动力结构分析",
+        "tag": "高级报告 01",
+        "description": "你的理想伴侣应该有怎样的人格？打开报告了解更多。"
+      },
+      "drain": {
+        "label": "能量内耗与补偿模式分析",
+        "tag": "高级报告 02",
+        "description": "你在现有环境里感到内耗吗？打开报告了解压力与内耗的来源。"
+      },
+      "profession": {
+        "label": "职业适配分析",
+        "tag": "高级报告 03",
+        "description": "什么样的职业更适合你？你理想的职业与你的驱动力结构匹配吗？打开报告了解更多。"
+      }
+    }
+  },
+    "promo": {
+    "balance": "当前余额"
+  },
+    "footer": {
+    "brand": "Persona Drive Secrets",
+    "blurb": "基于内在驱动力结构来预测人格。高级报告单次解锁 $3.99。",
+    "legal": "法律",
+    "terms": "服务条款",
+    "privacy": "隐私政策",
+    "support": "支持",
+    "contact": "联系团队：",
+    "copyright": "© {year} Persona Drive Secrets."
+    }
+  },
+  "overall": {
+    "drives": {
+      "Exploration": "探索创新",
+      "Achievement": "目标成就",
+      "Dominance": "主导决策",
+      "Pleasure": "娱乐享受",
+      "Care": "亲密守护",
+      "Affiliation": "人际关系",
+      "Value": "道德价值"
+    },
+    "loading": "正在生成报告...",
+    "error": "报告暂时无法加载。",
+    "missingTests": {
+      "title": "请先完成三项测试",
+      "subtitle": "需要外在、表层与内在人格测试后才能生成报告。",
+      "imposed": "完成外在测试",
+      "surface": "完成表层测试",
+      "innate": "完成内在测试"
+    },
+    "header": {
+      "kicker": "综合报告",
+      "title": "整合自我分析",
+      "subtitle": "统一呈现环境要求、表层人格与内在人格之间的关系。",
+      "computed": "最近计算时间：{date}"
+    },
+    "status": {
+      "cached": "已加载派生数据",
+      "recomputed": "已重新计算派生数据",
+      "upsertFailed": "派生数据已本地生成（等待同步）"
+    },
+    "environment": {
+      "title": "环境结构与适配",
+      "subtitle": "环境要求的驱动力结构，以及你在目前环境中的满意度。",
+      "metrics": {
+        "adaptation": "环境适配分数",
+        "satisfaction": "环境满足分数",
+        "adaptationTooltip": "基于能力向量（q2）的平均值。",
+        "satisfactionTooltip": "基于驱动满足度向量的平均值。",
+        "adaptationRange": "范围：1–5",
+        "satisfactionRange": "范围：0–5"
+      },
+      "graphs": {
+        "required": {
+          "title": "环境要求的驱动力结构",
+          "description": "展示环境如何把你推向不同方向。"
+        },
+        "imposed": {
+          "title": "外在环境影响下你展现的的驱动力结构",
+          "description": "展示你如何调整能量分配来适应环境。"
+        },
+        "satisfaction": {
+          "title": "你当下各种需求的满意度",
+          "description": "展示你在当前环境中各驱动的满足感。"
+        }
+      }
+    },
+    "persona": {
+      "title": "表层与内在驱动",
+      "subtitle": "对比你外在呈现与内在的驱动力结构的不同。",
+      "surface": {
+        "title": "表层驱动力结构",
+        "description": "这个结构展示你如何在日常生活中如何分配能量，你自知的表层人格。",
+        "top": "表层驱动前三"
+      },
+      "innate": {
+        "title": "内在驱动力结构",
+        "description": "反映深层次的各种驱动力强度。",
+        "top": "内在驱动前三"
+      }
+    },
+    "jung": {
+      "title": "荣格类型概览",
+      "predicted": "预测的MBTI行为标签",
+      "surface": "表层人格代码",
+      "innate": "内在人格代码",
+      "prompt": "大多数人格测试用简化标签描述复杂的性格行为特征。我们区分表层与内在人格，强调两种人格下驱动力结构的区别。行为由内在驱动力结构、适应策略， 与外在环境共同塑造。因此我们不仅能预测你的荣格式人格标签，也能解释为什么有同一标签的人会有不同的行为差异。",
+      "cta": "查看荣格完整分析"
+    },
+    "drain": {
+      "title": "能量内耗与适应策略",
+      "preview": "预览分数",
+      "totalDrain": "总内耗值",
+      "totalAdaptation": "总能量补偿值",
+      "totalDrainRange": "范围：0–5",
+      "totalAdaptationRange": "范围：0–5",
+      "description": {
+        "intro": "你的",
+        "surface": "表层人格",
+        "middle": "与",
+        "innate": "内在人格",
+        "rest": "驱动力结构可能会不同，因为你会将某些驱动力作为满足其他驱动力的工具。有时这种工具化的策略有助于你有效适应环境，但当目标驱动力无法在环境中被满足时，容易产生",
+        "conflict": "难以解释的内耗",
+        "tail": "。深入了解内耗的原因，以及哪些适应策略是真正有效的。"
+      },
+      "cta": "打开能量内耗与适应策略报告"
+    },
+    "profession": {
+      "title": "职业匹配",
+      "preview": "表层驱动力预览",
+      "description": "当你的驱动力结构与工作环境匹配时，表现最佳且压力最低。基于你当前的驱动力结构与能量投入模式，找到更适配的职业方向。",
+      "range": "范围：0–5",
+      "cta": "打开职业匹配"
+    },
+    "relationship": {
+      "title": "理想伴侣",
+      "preview": "理想伴侣性格",
+      "topDrives": "伴侣核心驱动力",
+      "range": "范围：0–5",
+      "description": "是否好你的奇理想伴侣应具备哪些特质？我们会结合你的表层与内在驱动力强度，推算更贴合你需求的理想化伴侣性格特质。",
+      "cta": "打开关系分析"
+    },
+    "locked": {
+      "message": "支付 $3.99 解锁该报告。",
+      "cta": "解锁 $3.99"
+    },
+    "footer": {
+      "back": "返回首页",
+      "note": "报告为辅助性分析，不构成医学或临床诊断。"
+    }
+  }
+}

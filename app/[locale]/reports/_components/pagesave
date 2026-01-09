@@ -1,0 +1,300 @@
+
+import React from "react";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+
+interface Reversal {
+  target: string;
+  reason: string;
+  description: string;
+}
+
+interface DriveData {
+  name: string;
+  rank: number;
+  reversals: Reversal[];
+}
+
+interface PDFProps {
+  data: DriveData[];
+  driveDefinitions: Record<string, string>;
+}
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 40,
+    backgroundColor: "#FFFFFF",
+    fontSize: 10,
+    fontFamily: "Helvetica",
+  },
+
+  header: {
+    marginBottom: 30,
+    borderBottomWidth: 2,
+    borderBottomColor: "#201f33",
+    borderStyle: "solid",
+    paddingBottom: 10,
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    color: "#0f172a",
+  },
+
+  subtitle: {
+    fontSize: 9,
+    textTransform: "uppercase",
+    letterSpacing: 2,
+    color: "#64748b",
+    marginTop: 4,
+  },
+
+  introBox: {
+    backgroundColor: "#f8fafc",
+    padding: 15,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+    borderStyle: "solid",
+  },
+
+  introText: { lineHeight: 1.5, color: "#334155" },
+
+  driveSection: {
+    marginBottom: 20,
+    borderWidth: 1,
+    borderStyle: "solid",
+    overflow: "hidden",
+  },
+
+  driveHeader: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  driveName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    color: "#ffffff",
+  },
+
+  rankBadge: { fontSize: 9, color: "#ffffff", opacity: 0.9 },
+
+  contentBody: {
+    padding: 15,
+    flexDirection: "row",
+  },
+
+  column: { flex: 1 },
+  columnLeft: { marginRight: 20 },
+
+  columnTitle: {
+    fontSize: 8,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    marginBottom: 8,
+  },
+
+  bodyText: { fontSize: 10, lineHeight: 1.4, color: "#1e293b" },
+
+  reversalItem: {
+    marginTop: 8,
+    padding: 8,
+    borderLeftWidth: 3,
+    borderStyle: "solid",
+  },
+
+  reversalReason: {
+    fontSize: 8,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    marginBottom: 3,
+    letterSpacing: 1,
+  },
+
+  reversalDesc: { fontSize: 9, color: "#475569", lineHeight: 1.3 },
+
+  noReversals: { fontSize: 9, fontStyle: "italic" },
+
+  footer: {
+    position: "absolute",
+    bottom: 30,
+    left: 40,
+    right: 40,
+    borderTopWidth: 1,
+    borderTopColor: "#e2e8f0",
+    borderStyle: "solid",
+    paddingTop: 10,
+    textAlign: "center",
+    color: "#94a3b8",
+    fontSize: 8,
+  },
+});
+
+// Central theme map: one palette per category
+function getTheme(name: string) {
+  // Your three anchors (6-digit hex)
+  const BLUE = "#0f51a1";   // Exploration
+  const PURPLE = "#671c77"; // Value/Affiliation/Care
+  const ORANGE = "#ae522b"; // Dominance/Achievement/Pleasure
+
+  let base = "#64748b";
+  if (name === "Exploration") base = BLUE;
+  if (["Value", "Affiliation", "Care"].includes(name)) base = PURPLE;
+  if (["Dominance", "Achievement", "Pleasure"].includes(name)) base = ORANGE;
+
+  // “Derived” shades (handpicked to stay consistent & readable)
+  // You can tweak these, but the structure is consistent across categories.
+  if (base === BLUE) {
+    return {
+      base,
+      sectionBg: "#f2f7ff",
+      sectionBorder: "#b9d3f2",
+      columnTitle: "#0f51a1",
+      muted: "#355b87",
+      suppressionBg: "#eef4ff",
+      suppressionBorder: "#0f51a1",
+      suppressionText: "#0b3b78",
+      priorityBg: "#f6f9ff",
+      priorityBorder: "#2e6fc6",
+      priorityText: "#1d4f92",
+      noRevText: "#0b3b78",
+    };
+  }
+
+  if (base === PURPLE) {
+    return {
+      base,
+      sectionBg: "#fbf4fc",
+      sectionBorder: "#ddb9e3",
+      columnTitle: "#671c77",
+      muted: "#6a3b73",
+      suppressionBg: "#f7ecf8",
+      suppressionBorder: "#671c77",
+      suppressionText: "#4f145c",
+      priorityBg: "#fcf7fd",
+      priorityBorder: "#84408f",
+      priorityText: "#5b1e67",
+      noRevText: "#4f145c",
+    };
+  }
+
+  // ORANGE
+  return {
+    base,
+    sectionBg: "#fff6f1",
+    sectionBorder: "#f0c6b3",
+    columnTitle: "#ae522b",
+    muted: "#7b4a36",
+    suppressionBg: "#fff0e8",
+    suppressionBorder: "#ae522b",
+    suppressionText: "#7f3a1e",
+    priorityBg: "#fff8f4",
+    priorityBorder: "#c76b43",
+    priorityText: "#8b4324",
+    noRevText: "#7f3a1e",
+  };
+}
+
+export const InstrumentationPDF = ({ data = [], driveDefinitions = {} }: PDFProps) => (
+  <Document>
+    <Page style={styles.page}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Instrumentation Analysis</Text>
+        <Text style={styles.subtitle}>Structural Adaptation Profile</Text>
+      </View>
+
+      <View style={styles.introBox}>
+        <Text style={styles.introText}>
+          Instrumentation maps the tension between who you are and what your environment demands. It occurs when your
+          innate drives are deprioritized due to your environment, forcing other drives to act as instruments for
+          compensation. While successful adaptation allows you to thrive under pressure, unresolved instrumentation
+          leads to suppression and internal conflict. Below, we list your dirves by your innate preference ranking. 
+          If it is demoted to a lower priority in your surface persona, we report whether it is due to instrumentation Adaptation, or Suppression.
+        </Text>
+      </View>
+
+      {data.map((item) => {
+        const name = item?.name || "Unknown Drive";
+        const theme = getTheme(name);
+
+        const definition = driveDefinitions[name] || "a core psychological motivator.";
+
+        return (
+          <View
+            key={name}
+            style={[
+              styles.driveSection,
+              {
+                borderColor: theme.sectionBorder,
+                backgroundColor: theme.sectionBg,
+              },
+            ]}
+          >
+            <View style={[styles.driveHeader, { backgroundColor: theme.base }]}>
+              <Text style={styles.driveName}>{name}</Text>
+              <Text style={styles.rankBadge}>Rank {item.rank || "?"} of 7</Text>
+            </View>
+
+            <View style={styles.contentBody}>
+              <View style={[styles.column, styles.columnLeft]}>
+                <Text style={[styles.columnTitle, { color: theme.columnTitle }]}>Innate Orientation</Text>
+                <Text style={styles.bodyText}>
+                  The {name.toLowerCase()} drive is {definition}
+                </Text>
+              </View>
+
+              <View style={styles.column}>
+                <Text style={[styles.columnTitle, { color: theme.columnTitle }]}>
+                  Drive Instrumentation
+                </Text>
+
+                {item.reversals && item.reversals.length > 0 ? (
+                  item.reversals.map((rev, i) => {
+                    const isSuppression = rev.reason === "suppression";
+
+                    return (
+                      <View
+                        key={i}
+                        style={[
+                          styles.reversalItem,
+                          {
+                            borderLeftColor: isSuppression ? theme.suppressionBorder : theme.priorityBorder,
+                            backgroundColor: isSuppression ? theme.suppressionBg : theme.priorityBg,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.reversalReason,
+                            { color: isSuppression ? theme.suppressionText : theme.priorityText },
+                          ]}
+                        >
+                          {isSuppression ? "Drive Suppression" : "Drive Adaptation"}
+                        </Text>
+
+                        <Text style={styles.reversalDesc}>
+                          {String(rev.description || "").replace(/<[^>]*>?/gm, "")}
+                        </Text>
+                      </View>
+                    );
+                  })
+                ) : (
+                  <Text style={[styles.noReversals, { color: theme.noRevText }]}>No drive instrumenation detected.</Text>
+                )}
+              </View>
+            </View>
+          </View>
+        );
+      })}
+
+      <Text style={styles.footer}>Confidential Persona Instrumentation Report • © 2025 PersonaDriveSecrete</Text>
+    </Page>
+  </Document>
+);
+

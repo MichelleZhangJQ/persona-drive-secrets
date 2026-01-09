@@ -1,0 +1,184 @@
+{
+  "tests": {
+    "imposed": {
+      "title": "Imposed Persona – Environmental Induced Drive Structure",
+      "subtitle": "Your responses show how your environment shapes your drive structure.",
+      "disagree": "Strongly Disagree",
+      "agree": "Strongly Agree",
+      "noSelection": "(No selection)",
+      "saving": "SAVING...",
+      "save": "Save Responses",
+      "saved": "Saved",
+      "incomplete": "Please answer all questions before saving.",
+      "back": "Return to Dashboard",
+      "next": "Next: Surface Persona Test",
+      "error": "Could not save responses. Please try again.",
+      "q1": "My environment pushes me to explore new ideas.",
+      "q2": "I can meet the expectation of exploring new ideas well.",
+      "q3": "I wish I could put more effort into exploring new ideas.",
+      "q4": "My environment pushes me to work toward clear goals and valuable outcomes.",
+      "q5": "I can meet the expectation of pursuing clear and valuable outcomes well.",
+      "q6": "I wish I could invest more effort into achieving concrete and valuable outcomes.",
+      "q7": "My environment pushes me to be a decision maker.",
+      "q8": "I can meet the expectation of taking responsibility for decisions well.",
+      "q9": "I wish I could spend more effort on taking the lead or shaping decisions.",
+      "q10": "My environment shares a culture that admires the pleasurable life style.",
+      "q11": "I am in tune with this culture that admires a pleasurable life style.",
+      "q12": "I would like to spend more time on enjoyable or pleasurable activities.",
+      "q13": "My environment pushes me to care for or support people close to me.",
+      "q14": "I can meet the expectation of caring and supporting people close to me well.",
+      "q15": "I wish I could devote more time or effort to caring and supporting people who matter to me.",
+      "q16": "My environment pushes me to maintain good relationships with peers.",
+      "q17": "I can meet the expectation of maintaining good peer relationships well.",
+      "q18": "I would like to put more effort into strengthening my relationships with peers.",
+      "q19": "My environment pushes me to act in ways that reflect my beliefs.",
+      "q20": "I can meet the expectation of acting in line with my beliefs well.",
+      "q21": "I wish I could devote more time or energy to activities that align with my beliefs."
+    },
+    "surface": {
+      "title": "Surface Persona Test",
+      "subtitle": "Reflecting on your real world motivations.",
+      "optionA": "Option A",
+      "optionB": "Option B",
+      "strongA": "Strongly A",
+      "strongB": "Strongly B",
+      "saving": "SECURING RESPONSES...",
+      "save": "SAVE RESPONSE",
+      "saved": "Saved",
+      "incomplete": "Please answer all questions before saving.",
+      "prev": "Previous: Imposed Persona Test",
+      "next": "Next: Innate Persona Test",
+      "error": "Failed to save. Please try again.",
+      "q1": {
+        "prompt": "Between the following two jobs, I would choose:",
+        "a": "a job that lets me explore new ideas",
+        "b": "a job that leads to clear and valuable rewards"
+      },
+      "q2": {
+        "prompt": "Between the following two roles, I would choose:",
+        "a": "a role that allows me to explore unfamiliar ideas",
+        "b": "a role where I take charge of making important decisions"
+      },
+      "q3": {
+        "prompt": "Between the following two lifestyles, I would choose:",
+        "a": "a lifestyle that gives me time to explore new ideas",
+        "b": "a lifestyle centered on enjoyable or relaxing activities"
+      },
+      "q4": {
+        "prompt": "Between the following two paths, I would choose:",
+        "a": "a path that lets me explore new ideas",
+        "b": "a path focused on caring for people who matter to me"
+      },
+      "q5": {
+        "prompt": "Between the following two lifestyles, I would choose:",
+        "a": "a lifestyle that allows me to explore new ideas freely",
+        "b": "a lifestyle that helps me maintain relationships with peers"
+      },
+      "q6": {
+        "prompt": "Between the following two commitments, I would choose:",
+        "a": "pursuing new questions that interest me",
+        "b": "engaging in activities that align with my core beliefs"
+      },
+      "q7": {
+        "prompt": "Between the following two paths, I would choose:",
+        "a": "a path where I am focused on caring for people important to me",
+        "b": "a path that focuses on concrete, valuable achievements"
+      },
+      "q8": {
+        "prompt": "Between the following two jobs, I would choose:",
+        "a": "a job that allows me time to care for people important to me",
+        "b": "a job where I make the final decisions"
+      },
+      "q9": {
+        "prompt": "Between the following two lifestyles, I would choose:",
+        "a": "a lifestyle centered around caring for people important to me",
+        "b": "a lifestyle centered on enjoyable or relaxing activities"
+      },
+      "q10": {
+        "prompt": "Between the following two commitments, I would choose:",
+        "a": "maintaining strong connections to friends and peers",
+        "b": "working toward clear rewards or achievements"
+      },
+      "q11": {
+        "prompt": "Between the following two roles, I would choose:",
+        "a": "staying closely connected with peers",
+        "b": "taking charge of directing the course of action"
+      },
+      "q12": {
+        "prompt": "Between the following two lifestyles, I would choose:",
+        "a": "feeling close and connected with friends and peers",
+        "b": "enjoying a comfortable and relaxing lifestyle"
+      },
+      "q13": {
+        "prompt": "Between the following two choices, I would choose:",
+        "a": "spending time on activities that promote my core beliefs",
+        "b": "working toward goals that bring clear rewards"
+      },
+      "q14": {
+        "prompt": "Between the following two approaches, I would choose:",
+        "a": "staying loyal to my core beliefs",
+        "b": "stepping up to direct the decisions being made"
+      },
+      "q15": {
+        "prompt": "Between the following two lifestyles, I would choose:",
+        "a": "expressing and acting on my values",
+        "b": "engaging in enjoyable or pleasurable activities"
+      },
+      "q16": {
+        "prompt": "Between the following two lifestyles, I would choose:",
+        "a": "having an enjoyable life",
+        "b": "achieving goals and having a productive life"
+      },
+      "q17": {
+        "prompt": "Between the following two social focuses, I would choose:",
+        "a": "nurturing deep, intimate relationships with those closest to me",
+        "b": "fostering a sense of belonging and connection within my circle of peers"
+      },
+      "q18": {
+        "prompt": "Regarding my influence on others, I find that:",
+        "a": "I am most comfortable leading in my private, personal life",
+        "b": "I am most comfortable taking charge in professional or group settings"
+      },
+      "q19": {
+        "prompt": "Regarding my social connections, I prefer:",
+        "a": "having a few deep, intimate bonds with individuals",
+        "b": "belonging to a larger, active circle of friends and peers"
+      },
+      "q20": {
+        "prompt": "When it comes to my energy, I feel most recharged:",
+        "a": "through quiet reflection or sensory pleasure in a calm space",
+        "b": "through active social engagement and high-energy environments"
+      }
+    },
+    "innate": {
+      "title": "Innate Persona Test",
+      "subtitle": "The fundamental architecture of your core instinct.",
+      "disagree": "Strongly Disagree",
+      "agree": "Strongly Agree",
+      "saving": "SECURING RESPONSES...",
+      "save": "SAVE RESPONSE",
+      "saved": "Saved",
+      "incomplete": "Please answer all questions before saving.",
+      "prev": "Back: Surface Persona Test",
+      "next": "Next: Overall Report",
+      "error": "Failed to save. Please try again.",
+      "q1": "I would choose to explore new ideas, even if doing so does not guarantee strong accomplishments.",
+      "q2": "I would choose to explore new ideas, even if it limits my ability to lead the group in making important decisions.",
+      "q3": "I would choose to explore new ideas, even when it is not especially relaxing or comfortable.",
+      "q4": "I would choose to explore new ideas, even if it does not allow me to stay connected with my peers.",
+      "q5": "I would choose to explore new ideas, even if it reduces my sense of connection with people who matter to me.",
+      "q6": "I would choose to explore new ideas, even if they do not fully align with the moral values I hold.",
+      "q7": "I would support my peers, even if it means having less time for comfort or relaxation.",
+      "q8": "I would seek roles where I make the important decisions for the group, even if this reduces the time I can devote to people important to me.",
+      "q9": "I would continue focusing on producing meaningful results, even when doing so prevents me from spending time with people I care about.",
+      "q10": "I would stay closely connected with peers, even if doing so limits the time I can dedicate to achieving clear accomplishments.",
+      "q11": "I would choose to take charge of group decision-making, even if that weakens some of my relationships.",
+      "q12": "I would stay connected with people important to me, even when that reduces my time for relaxation or enjoyment.",
+      "q13": "I would work toward valuable achievements, even when doing so limits my ability to fully act according to my moral beliefs.",
+      "q14": "I would take on roles that allow me to direct the decisions of a group, even if that prevents me from acting according to my moral values.",
+      "q15": "I would stay committed to my moral values, even when this requires giving up comfort or enjoyment.",
+      "q16": "I would focus on achieving goals, even when this requires giving up comfort or enjoyment.",
+      "q17": "I would rather spend time with people important to me, even if it means giving up time socializing with friends."
+    }
+  }
+}

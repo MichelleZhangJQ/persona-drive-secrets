@@ -1,0 +1,211 @@
+{
+  "home": {
+    "dashboard": {
+    "header": "Information Dashboard",
+    "welcome": {
+      "title": "Welcome Message",
+      "description": "Hover over each test to see what it measures."
+    },
+    "imposed": {
+      "title": "Imposed Persona",
+      "description": "Shows how your environment pushes you in various aspects."
+    },
+    "surface": {
+      "title": "Surface Persona",
+      "description": "Shows where you are motivated to spend your energy in dreveryday life."
+    },
+    "innate": {
+      "title": "Innate Persona",
+      "description": "Your baseline inner drive profile beneath the surface."
+    },
+    "report": {
+      "title": "Final Report",
+      "description": "A full synthesis of all persona layers."
+    },
+    "tester": {
+      "cta": "Join as a Volunteer Tester",
+      "note": "Complete a short test pack to unlock 10 days of full access."
+    }
+  },
+    "progress": {
+    "title": "Take Tests & Get Summary",
+    "step": "Step {number}",
+    "hint": "Start with Imposed, then Surface and Innate, then view your Summary Report.",
+    "steps": {
+      "imposed": { "label": "Imposed Persona", "tag": "Environment" },
+      "surface": { "label": "Surface Persona", "tag": "Daily Strategy" },
+      "innate": { "label": "Innate Persona", "tag": "Baseline" },
+      "report": { "label": "Overall Report", "tag": "Summary" }
+    }
+  },
+  "premium": {
+    "title": "Premium Analysis",
+    "preview": {
+      "drain": {
+        "totalDrain": "Total Drain",
+        "totalAdaptation": "Total Adaptation"
+      }
+    },
+    "status": {
+      "free": "Free",
+      "granted": "Access Granted",
+      "locked": "Locked"
+    },
+    "cta": {
+      "free": "Free Access",
+      "open": "Open Report",
+      "unlock": "Unlock Access — $3.99"
+    },
+    "cards": {
+      "jung": {
+        "label": "Jung Personality Trait Analysis",
+        "tag": "Free Report",
+        "description": "Surface vs. innate persona analysis across four Jung dimensions."
+      },
+      "relationship": {
+        "label": "Ideal Relationship Analysis",
+        "tag": "Premium Report 01",
+        "description": "Understand how your ideal partner's persona profile."
+      },
+      "drain": {
+        "label": "Energy Drain and Adaptation Analysis",
+        "tag": "Premium Report 02",
+        "description": "Identify where your frustration comes from."
+      },
+      "profession": {
+        "label": "Occupation Analysis",
+        "tag": "Premium Report 03",
+        "description": "Identify occupations that fit your drive profiles."
+      }
+    }
+  },
+    "promo": {
+    "balance": "Current Balance"
+  },
+    "footer": {
+    "brand": "Persona Drive Secrets",
+    "blurb": "Advanced psychological mapping of innate drives vs. behavioral persona. Premium reports are available for $3.99 per individual unlock.",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "support": "Support",
+    "contact": "Contact team:",
+    "copyright": "© {year} Persona Drive Secrets."
+    }
+  },
+  "overall": {
+    "drives": {
+      "Exploration": "Exploration",
+      "Achievement": "Achievement",
+      "Dominance": "Dominance",
+      "Pleasure": "Pleasure",
+      "Care": "Care",
+      "Affiliation": "Affiliation",
+      "Value": "Value"
+    },
+    "loading": "Preparing report...",
+    "error": "Report unavailable right now.",
+    "missingTests": {
+      "title": "Complete all three tests first",
+      "subtitle": "We need your Imposed, Surface, and Innate persona tests before we can build the report.",
+      "imposed": "Take Imposed Test",
+      "surface": "Take Surface Test",
+      "innate": "Take Innate Test"
+    },
+    "header": {
+      "kicker": "Overall Report",
+      "title": "Integrated Self Analysis",
+      "subtitle": "A single view of how your environment, surface persona, and innate persona interact.",
+      "computed": "Last computed at {date}"
+    },
+    "environment": {
+      "title": "Environment Fit & Structure",
+      "subtitle": "What the environment demands of your for drives, and how you meet or resist those demands.",
+      "metrics": {
+        "adaptation": "Environment Adaptation Score",
+        "satisfaction": "Environment Satisfaction Score",
+        "adaptationTooltip": "Average of the competence vector (q2).",
+        "satisfactionTooltip": "Average of the drive satisfaction vector.",
+        "adaptationRange": "Range: 1–5",
+        "satisfactionRange": "Range: 0–5"
+      },
+      "graphs": {
+        "required": {
+          "title": "Environment Required Drive Profile",
+          "description": "Shows how your environment pushes you in different directions."
+        },
+        "imposed": {
+          "title": "Environment Imposed Drive Profile",
+          "description": "Shows how you adapt and shift energy across drives to fit the environment."
+        },
+        "satisfaction": {
+          "title": "Drive Satisfaction Profile",
+          "description": "Shows how satisfied you feel in each drive in the current environment."
+        }
+      }
+    },
+    "persona": {
+      "title": "Surface vs Innate Drives",
+      "subtitle": "Compare what you show outwardly with what feels natural underneath.",
+      "surface": {
+        "title": "Surface Drive Profile",
+        "description": "Shows how you allocate energy in everyday life, both publicly and privately, in ways you consciously recognize.",
+        "top": "Top Surface Drives"
+      },
+      "innate": {
+        "title": "Innate Drive Profile",
+        "description": "Shows how strong you feel innately in different drives.",
+        "top": "Top Innate Drives"
+      }
+    },
+    "jung": {
+      "title": "Jung Trait Snapshot",
+      "predicted": "Predicted Behavior Label",
+      "surface": "Surface Code",
+      "innate": "Innate Code",
+      "prompt": "Most personality tests use simplified labels to capture a complex personality landscape across a few behavior dimensions. Our drive-based approach offers deeper analysis by distinguishing your Surface and Innate personas, recognizing that behavior is shaped by inner drives, environment, and adaptive strategies. With this approach, we can predict your typical Jung-style behavior label and also explain why people with the same label may look very different once both Surface and Innate personas are considered.",
+      "cta": "See Full Jung Analysis"
+    },
+    "drain": {
+      "title": "Energy Drain & Adaptation",
+      "preview": "Preview Scores",
+      "totalDrain": "Total Energy Drain",
+      "totalAdaptation": "Total Adaptation",
+      "totalDrainRange": "Range: 0–5",
+      "totalAdaptationRange": "Range: 0–5",
+      "description": {
+        "intro": "Your ",
+        "surface": "Surface",
+        "middle": "and",
+        "innate": "Innate",
+        "rest": " profiles can diverge because you use some drives to fulfill other drives. Sometimes this strategy helps you adapt effectively. But when target drives are not satisfied, it can create ",
+        "conflict": "internal conflict",
+        "tail": " you can’t easily explain. Find out the reasons for those conflicts or the adaptations that work for you."
+      },
+      "cta": "Open Energy Drain Report"
+    },
+    "profession": {
+      "title": "Profession Fit",
+      "preview": "Top Surface Drives",
+      "description": "When your drive profile fits your work environment, you perform best and feel the least stress. Find out top professions based on your current energy spending pattern.",
+      "range": "Range: 0–5",
+      "cta": "Open Profession Fit"
+    },
+    "relationship": {
+      "title": "Ideal Relationship Profile",
+      "preview": "Ideal Partner Snapshot",
+      "topDrives": "Top Partner Drives",
+      "range": "Range: 0–5",
+      "description": "Ever wonder what qualities your ideal partner should possess? We can estimate an idealized profile based on the strength of your needs across drives, considering both your Surface and Innate personas.",
+      "cta": "Open Relationship Analysis"
+    },
+    "locked": {
+      "message": "Spend $3.99 to unlock this report.",
+      "cta": "Unlock for $3.99"
+    },
+    "footer": {
+      "back": "Back to Dashboard",
+      "note": "Reports are adaptive summaries, not medical or clinical diagnoses."
+    }
+  }
+}

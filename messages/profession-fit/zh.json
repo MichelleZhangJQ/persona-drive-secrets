@@ -1,0 +1,102 @@
+{
+  "professionFit": {
+    "loading": {
+      "title": "正在运行职业匹配模拟..."
+    },
+    "auth": {
+      "signIn": "请先登录",
+      "accessRestricted": "访问受限"
+    },
+    "missingTests": {
+      "title": "请先完成测试",
+      "subtitle": "职业匹配需要你的 外在（Imposed）、表层（Surface）与内在（Innate）人格测试结果。",
+      "imposed": "外在测试",
+      "surface": "表层测试",
+      "innate": "内在测试"
+    },
+    "errors": {
+      "unavailableTitle": "这份报告暂时加载失败",
+      "unavailableBody": "请刷新后再试一次。"
+    },
+    "status": {
+      "cached": "派生数据已从数据库加载",
+      "recomputed": "派生数据已重新计算",
+      "upsertFailed": "派生数据已保存到本地（等待同步）",
+      "upsertDetailFallback": "数据库无响应"
+    },
+    "header": {
+      "titleStart": "职业",
+      "titleAccent": "匹配",
+      "subtitle": "把你的驱动力结构，和真实职业需求对齐看看",
+      "dashboardCta": "返回主页"
+    },
+    "about": {
+      "title": "这份报告在做什么？",
+      "body": "这份报告用你的 (1) 表层人格、(2) 内在人格、(3) 能力，自我兴趣，以及 (4) 工具化路径（instrumentation routes）来模拟职业匹配。你可以用两种视角来看：<strong>理想匹配</strong> 和 <strong>现实匹配</strong>。两种视角都会考虑能量消耗（drain）。而“理想匹配”还会把你正在追求/重视的方向算进去，所以在不同视角下，你的“最优职业”可能会不一样。",
+      "note": "<strong>小提醒：</strong>这些模式会随时间变化。建议隔一段时间就回来重新测试一次。"
+    },
+    "majors": {
+      "title": "最多选 10 个你在考虑的职业大类。",
+      "selected": "已选择：{count}/{max}",
+      "emptyTitle": "先选一些大类开始吧",
+      "emptyBody": "选好大类后，你会看到头十个最的匹配的职业，还可以点进去看每个职业的详细拆解。"
+    },
+    "mode": {
+      "title": "你想用哪种视角来看匹配？",
+      "aspired": "当前理想工作匹配",
+      "job": "现实工作匹配"
+    },
+    "top10": {
+      "title": "前十名最适合工作",
+      "subtitle": "{count} 子类型",
+      "scoreNote": "匹配分数范围是 <strong>0–5</strong>，其中 <strong>5</strong> 表示最匹配。"
+    },
+    "active": {
+      "matchLabel": "匹配分数（5 最好）",
+      "matchShort": "匹配（5 最好）",
+      "drainLabel": "内耗：",
+      "drainInline": "预计能量内耗：",
+      "interpretationTitle": "怎么理解这里的结果？",
+      "interpretationBody": "这里用你的表面驱动力结构与职业需求进行匹配。红色表示你在该驱动力上低于职业需求（缺口/deficit），绿色表示你高于职业需求（富余/ surplus）。"
+    },
+    "table": {
+      "title": "驱动力表格",
+      "legend": "<strong>调整后表层驱动</strong> = 表层驱动减去能量消耗，<strong>理想化表层驱动</strong> = 调整后表层驱动加上理想愿望，<strong>差值</strong> = {diffLabel}。",
+      "colDrive": "驱动力",
+      "colAdjSurface": "调整后表层驱动",
+      "colSurfaceAspired": "理想化表层驱动",
+      "colJobDemand": "职业需求",
+      "colDiff": "差值",
+      "diffAspired": "理想化表层驱动− 职业需求",
+      "diffJob": " 调整后表层驱动 - 职业需求"
+    },
+    "custom": {
+      "title": "自定义一个“我的理想工作”",
+      "jobNamePlaceholder": "工作名称",
+      "defaultJobName": "我的理想工作驱动分布",
+      "majorLabel": "自定义",
+      "run": "运行自定义匹配"
+    },
+    "noSelection": {
+      "title": "还没选中具体职业",
+      "body": "从左侧点一个职业子类型，就能看到完整拆解。"
+    },
+    "footer": {
+      "titleStart": "下一步",
+      "titleAccent": "建议",
+      "body": "如果某个工作匹配分数偏低，并不等于“不要做”。它更常见的含义是：(1) 你可能需要一个能补足你缺口驱动力的环境；(2) 同时把能量内耗（drain）降下来，你会更省力、更顺。",
+      "drainCta": "查看你的能量消耗与适应分析 →",
+      "status": "模拟完成：匹配向量已稳定。",
+      "dashboardCta": "返回主页"
+    },
+    "driveDef": {
+      "Exploration": "好奇 + 多样性：想探索新体验、新知识、新可能。",
+      "Achievement": "目标驱动：想完成、突破、精进、变强。",
+      "Dominance": "主导/掌控：想影响局面、做决策、定方向。",
+      "Pleasure": "舒适与享受：更看重轻松、愉快、即时奖励。",
+      "Care": "照顾与支持：愿意保护、陪伴、情感上托住别人。",
+      "Affiliation": "归属与连接：喜欢协作、融入群体、维系关系。",
+      "Value": "原则与意义：希望行为符合内在标准与价值感。"
+    }
+  }
+}

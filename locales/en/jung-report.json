@@ -1,0 +1,296 @@
+{
+  "jungReport": {
+    "opening": {
+      "left": {
+        "title": "Surface Persona",
+        "subtitle": "How you typically show up outwardly (in behavior, interaction, and visible choices)."
+      },
+      "right": {
+        "title": "Innate Persona",
+        "subtitle": "Your deeper default patterns (what feels natural when you’re not forcing adaptation)."
+      },
+      "behaviorMapping": {
+        "title": "Mapping to common behavior-test personas",
+        "explanation": "Behavior-based tests focus on how you typically act across the four Jung dimensions. We treat I/E and T/F as everyday, action-facing axes, and S/N and J/P as inner cognitive and organizational axes. So, to estimate a behavior-based result (like MBTI), we take I/E and T/F from your Surface Persona and S/N and J/P from your Innate Persona."
+      }
+    },
+
+
+    "energy": {
+      "title": "Energy & Attention",
+      "labelDefs": {
+        "introvert": "Introversion is a surface strategy: you prefer depth, selectivity, and internal processing to manage energy.",
+        "extrovert": "Extroversion is a surface strategy: you prefer outward engagement, activation, and external impact to manage energy.",
+        "ambivalent": "Ambivalence means you can switch: you may be outgoing in some contexts and quiet in others, depending on needs and safety."
+      },
+      "archetypes": {
+        "explorationIntrovert": "The Insightful Voyager",
+        "careIntrovert": "The Protective Guardian",
+        "dominantExtrovert": "The Strategic Leader",
+        "pleasureExtrovert": "The Vibrant Enthusiast",
+        "socialExtrovert": "The Connected Connector",
+        "adaptiveNavigator": "The Versatile Socialite"
+      },
+      "archetypeDescriptions": {
+        "explorationIntrovert": "Your introverted energy flow is mainly consumed by a drive toward discovery and exploration, so you recharge through depth, curiosity, and inner mapping.",
+        "careIntrovert": "Your introverted energy flow is mainly consumed by a drive to protect and support, so you recharge through safety, loyalty, and careful stewardship.",
+        "dominantExtrovert": "Your extroverted energy flow is mainly driven by impact and leadership, so you recharge through action, decisiveness, and visible influence.",
+        "pleasureExtrovert": "Your extroverted energy flow is mainly driven by enjoyment and stimulation, so you recharge through variety, experience, and positive activation.",
+        "socialExtrovert": "Your extroverted energy flow is mainly driven by affiliation, so you recharge through connection, community, and shared momentum.",
+        "adaptiveNavigator": "Your energy flow flexes between inward focus and outward engagement, so you recharge by matching the environment and the task at hand."
+      },
+      "summary": {
+        "introvert": "Your Surface Persona operates with an Introverted strategy, expressed as {archetype}.",
+        "extrovert": "Your Surface Persona leads with an Extroverted strategy, expressed as {archetype}.",
+        "ambivalent": "Your Surface Persona is Ambivalent, expressed as {archetype}—you can flex between reflection and engagement."
+      },
+      "surfaceLine": "Your surface energy orientation shows how you choose to spend energy in everyday life. {detail}",
+      "surfaceLineAdaptive": "It shows as Introversion/Extroversion adaptive. You can shift between introverted and extroverted modes depending on the context. This usually means you balance inward recovery (Exploration/Care) with outward activation (Dominance/Pleasure/Affiliation), which helps you socialize flexibly.",
+      "surfaceLineFixed": "It shows as {label}: you choose to spend more energy on {drivePhrase}.",
+      "innateLine": "Your innate energy orientation determines which energy patterns recharge you or drain you. It shows as {label}, {detail}",
+      "innateLineAdaptive": "indicating a complex, situational dependence. You can consult your innate drive profile to see whether extroverted drives (Dominance, Pleasure, Affiliation) recharge you more or introverted drives (Exploration, Care) recharge you more.",
+      "innateLineFixed": "indicating {drivePhrase} tends to recharge you more.",
+      "alignmentLine": {
+        "match": "Your surface adaptive energy orientation is identical with your innate recharge pattern, indicating that you won't experience frictions in this aspect.",
+        "mismatch": "Your surface adaptive energy orientation and activity is different from your innate energy recharge patterns, indicating that privately you enjoy {drivePhrase} to recharge."
+      },
+      "subscript": {
+        "introversion": {
+          "care": "Introversion_care",
+          "exploration": "Introversion_exploration"
+        },
+        "extroversion": {
+          "dominance": "Extroversion_dominance",
+          "pleasure": "Extroversion_pleasure",
+          "affiliation": "Extroversion_affiliation",
+          "extroversion": "Extroversion_extroversion"
+        },
+        "adaptive": "Introversion/Extroversion adaptive"
+      },
+      "drivePhrase": {
+        "introvert": {
+          "care": "care and protection (Care)",
+          "exploration": "curiosity and discovery (Exploration)",
+          "fallback": "inward recovery (Exploration/Care)"
+        },
+        "extrovert": {
+          "dominance": "impact and leadership (Dominance)",
+          "pleasure": "stimulation and enjoyment (Pleasure)",
+          "affiliation": "connection and belonging (Affiliation)",
+          "fallback": "outward activation (Dominance/Pleasure/Affiliation)"
+        },
+        "mixed": {
+          "introvert": "inward recovery (Exploration/Care)",
+          "extrovert": "outward activation (Dominance/Pleasure/Affiliation)",
+          "balanced": "a balance of inward recovery (Exploration/Care) and outward activation (Dominance/Pleasure/Affiliation)"
+        }
+      },
+      "analysis": "{surfaceLine} {innateLine} {alignmentLine} Since common behavior-based tests treat introversion/extroversion as everyday behavior, we use your surface energy orientation as your overall label.",
+      "matrix": {
+        "surfaceTitle": "Surface Persona",
+        "surfaceNote": "Your outward energy strategy and visible engagement style.",
+        "innateTitle": "Innate Persona",
+        "innateNote": "Your baseline energy system when you don’t force adaptation.",
+        "syncTitle": "Sync",
+        "syncAligned": "Aligned",
+        "syncAdaptive": "Adaptive",
+        "syncNoteAligned": "Outer strategy and baseline support each other.",
+        "syncNoteAdaptive": "You flex between modes across contexts."
+      },
+      "matched": {
+        "introvertCare": "Both your Surface and Innate energy orientation are Introverted, and your introverted subtype is Care. You consistently recharge through safety, loyalty, protection, and careful stewardship.",
+        "introvertExploration": "Both your Surface and Innate energy orientation are Introverted, and your introverted subtype is Exploration. You consistently recharge through depth, curiosity, discovery, and inner mapping.",
+        "extrovertDominance": "Both your Surface and Innate energy orientation are Extroverted, and your extroverted subtype is Dominance. You consistently recharge through action, decisiveness, impact, and visible leadership.",
+        "extrovertPleasure": "Both your Surface and Innate energy orientation are Extroverted, and your extroverted subtype is Pleasure. You consistently recharge through variety, stimulation, experience, and positive activation.",
+        "extrovertAffiliation": "Both your Surface and Innate energy orientation are Extroverted, and your extroverted subtype is Affiliation. You consistently recharge through connection, community, belonging, and shared momentum.",
+        "adaptive": "Both your Surface and Innate energy orientation are Adaptive. You can shift between inward recovery and outward activation depending on context, and you recharge best by matching the environment and task."
+      },
+
+      "subtypeMismatch": {
+        "introvertCareVsExploration": "Your Surface and Innate energy orientation are both Introverted, but they use different introverted subtypes (Care vs Exploration). This can feel like you seek depth in a consistent way, yet what actually restores you alternates between protection/stability and curiosity/discovery. When you lean too hard into the wrong subtype for the moment, you may still feel tired even while being “introverted.”",
+        "extrovertSubtype": "Your Surface and Innate energy orientation are both Extroverted, but they use different extroverted subtypes (Dominance/Pleasure/Affiliation). This can feel like you stay activated and outward, yet what actually restores you differs from what you’re spending energy on. If you keep expressing the wrong extroverted subtype, you may feel busy and social but not truly recharged."
+      },
+      "behaviorNote": "Because Introversion/Extroversion is an surface choice on behavior, we pick the Surface Persona as the basis for setting the label of this dimension."
+
+    },
+    "perception": {
+      "title": "Information Processing",
+      "labelDefs": {
+        "intuitive": "Intuition emphasizes patterns, meaning, and future possibility. You naturally search for the big picture and hidden connections.",
+        "sensing": "Sensing emphasizes concrete facts, present reality, and reliable methods. You naturally trust details, evidence, and practical execution.",
+        "ambivalent": "Ambivalence indicates cognitive flexibility: you can move between detail-focus and pattern-focus depending on the task."
+      },
+      "archetypes": {
+        "pragmaticRealist": "Tangible Facts & Present Utility",
+        "detailSpecialist": "Precision, Quality & Concrete Data",
+        "conceptualVisionary": "Abstract Patterns & Future Possibility",
+        "insightExplorer": "Hidden Meanings & Global Connections",
+        "perceptiveGeneralist": "Balanced Fact-Pattern Integration"
+      },
+      "archetypeDescriptions": {
+        "pragmaticRealist": "Your perception gravitates toward what is concrete and useful right now, so you trust practical signals and present reality.",
+        "detailSpecialist": "Your perception is tuned to fine-grained details and accuracy, so you notice what others miss and prefer clear evidence.",
+        "conceptualVisionary": "Your perception is pulled toward future possibility and abstract patterns, so you see where ideas can go next.",
+        "insightExplorer": "Your perception searches for hidden connections and deeper meanings, so you connect dots across themes and contexts.",
+        "perceptiveGeneralist": "Your perception balances detail and pattern, so you can move between facts and possibilities without losing clarity."
+      },
+      "summary": {
+        "ambivalent": "Your Innate Persona for perception is naturally balanced: you can absorb both concrete data and abstract patterns with low friction.",
+        "anchored": "Your Innate Persona for perception is anchored in {pole}, operating as {archetype}."
+      },
+      "surfaceLine": {
+        "sensing": "Your Surface information processing is Sensing: you focus on practical details and concrete reality.",
+        "intuitive": "Your Surface information processing is Intuition: you focus on abstract patterns and future possibilities.",
+        "adaptive": "Your Surface information processing is Adaptive: sometimes you focus on practical goals, and sometimes you focus on patterns and possibilities."
+      },
+      "innateAnchor": {
+        "sensing": "Because your Innate style is Sensing, even when you use different surface strategies, your effort tends to stay grounded in practical outcomes and real-world constraints.",
+        "intuitive": "Because your Innate style is Intuition, even when you use different surface strategies, you tend to push beyond practical limits and look for broader meaning or future potential.",
+        "adaptive": "Because your Innate style is Adaptive, your baseline is flexible: you can ground some tasks in practical goals while allowing other tasks to expand beyond immediate practicality."
+      },
+      "matched": {
+        "sensing": "Both your Surface and Innate information processing are Sensing. You naturally focus on practical facts, concrete details, and what can be applied right now. You are thoroughly practical.",
+        "intuitive": "Both your Surface and Innate information processing are Intuition. You naturally focus on patterns, meaning, and future possibilities. You’re not limited by immediate practical constraints.",
+        "adaptive": "Both your Surface and Innate information processing are Adaptive. You can shift: sometimes you keep information work tied to practical goals, and other times you extend it into broader possibilities."
+      },
+      "behaviorNote": "For Information Processing (N/S), because it is your innate cognitive function, we take the label from your Innate Persona as the overall trait in this dimension.",
+      "matrix": {
+        "innateTitle": "Innate Persona",
+        "innateNote": "Your default way of absorbing information.",
+        "surfaceTitle": "Surface Persona",
+        "surfaceNote": "Your day-to-day lens for prioritizing information.",
+        "syncTitle": "Sync",
+        "syncAligned": "Aligned",
+        "syncFlexible": "Flexible",
+        "syncNoteAligned": "Baseline and surface lens match.",
+        "syncNoteFlexible": "You can switch lenses when needed."
+      }
+    },
+    "judgment": {
+      "title": "Decision Style",
+      "labelDefs": {
+        "thinking": "Thinking prioritizes objective logic and functional consistency—decisions lean toward truth, structure, and efficiency.",
+        "feeling": "Feeling prioritizes values, harmony, and human impact—decisions lean toward meaning, ethics, and relational effects.",
+        "ambivalent": "Ambivalence indicates you can shift between logic-first and value-first judgment depending on context and stakes."
+      },
+      "archetypes": {
+        "analyticalArchitect": "Systemic Logic & Discovery",
+        "principledStrategist": "Value-Driven Rationality",
+        "empatheticGuardian": "Compassionate Care & Harmony",
+        "moralConvictionist": "Idealistic Integrity & Value",
+        "adaptiveMediator": "Contextual Logic-Value Bridge"
+      },
+      "archetypeDescriptions": {
+        "analyticalArchitect": "Your judgment favors structural logic and consistency, so you decide by building clear systems and checking coherence.",
+        "principledStrategist": "Your judgment favors rational strategy grounded in principles, so you decide by aligning choices with core standards.",
+        "empatheticGuardian": "Your judgment favors care and relational impact, so you decide by protecting people and preserving harmony.",
+        "moralConvictionist": "Your judgment favors moral integrity and values, so you decide by what feels right and ethically consistent.",
+        "adaptiveMediator": "Your judgment flexes between logic and values, so you decide by reading context and balancing tradeoffs."
+      },
+      "summary": {
+        "ambivalent": "You have a flexible real-world judgment style: you can use logic or empathy depending on what the situation calls for.",
+        "surface": "In your Surface Persona, you lead with {pole}, operating as {archetype}."
+      },
+      "surfaceLine": {
+        "thinking": "Your Surface judgment style is Thinking: you present decisions through logic, consistency, and objective reasoning.",
+        "feeling": "Your Surface judgment style is Feeling: you present decisions through values, ethics, and sensitivity to human impact.",
+        "adaptive": "Your Surface judgment style is Adaptive: sometimes you lead with logic and consistency, and other times you lead with values and relational impact."
+      },
+      "innateAnchor": {
+        "thinking": "Because your Innate style is Thinking, even when you use different surface strategies, your internal decision engine tends to return to logic, structure, and functional truth.",
+        "feeling": "Because your Innate style is Feeling, even when you use different surface strategies, your internal decision engine tends to return to values, ethics, and the human consequences of choices.",
+        "adaptive": "Because your Innate style is Adaptive, your baseline is flexible: you can genuinely operate in both logic-first and values-first modes, and which one dominates depends on safety, stakes, and context."
+      },
+      "integration": {
+        "valuesInside": "Integration style: values inside, logic outside. You may use a rational presentation layer to navigate the world, while your deeper compass is value-based.",
+        "logicInside": "Integration style: logic inside, warmth outside. You may run an analytical engine internally while using a relational style to work effectively with people.",
+        "flexPublic": "Integration style: a flexible public style built on a consistent inner baseline.",
+        "flexInner": "Integration style: a consistent public style built on a flexible inner engine.",
+        "generic": "Integration style: a translation skill between what feels natural internally and what works best externally in specific contexts."
+      },
+      "matchedSummary": {
+        "thinking": "Both your Surface and Innate judgment style are Thinking. You naturally prioritize logic, consistency, and objective evaluation.",
+        "feeling": "Both your Surface and Innate judgment style are Feeling. You naturally prioritize values, human impact, and relational harmony.",
+        "adaptive": "Both your Surface and Innate judgment style are Adaptive. You can switch between logic-first and values-first decision-making depending on context."
+      },
+      "matchedAnalysis": {
+        "thinking": "This creates a stable, explainable decision style: you tend to prefer clear reasoning, consistent standards, and functional outcomes.",
+        "feeling": "This creates a stable, meaning-centered decision style: you tend to prioritize ethical fit, trust, and the relational consequences of choices.",
+        "adaptive": "This creates high versatility: you can use structure when needed and empathy when needed, but you may benefit from explicitly choosing which mode the situation calls for."
+      },
+      "behaviorNote": "Since Thinking and Feeling is an surface behavior, we pick this trait in your surface persona as your overall label.",
+      "matrix": {
+        "surfaceTitle": "Surface Persona",
+        "surfaceNote": "Your visible judgment style in real-world decisions.",
+        "innateTitle": "Innate Persona",
+        "innateNote": "Your baseline judgment engine when stakes are internal/private.",
+        "syncTitle": "Sync",
+        "syncAligned": "Aligned",
+        "syncAdaptive": "Adaptive",
+        "syncNoteAligned": "Outer style matches baseline.",
+        "syncNoteAdaptive": "Outer style is a strategic translation of baseline."
+      }
+    },
+    "orientation": {
+      "title": "Lifestyle",
+      "label": {
+        "perceiving": "Perceiving",
+        "judging": "Judging",
+        "adaptive": "Adaptive"
+      },
+      "labelDefs": {
+        "judging": "Judging prefers structure, closure, and clarity—planning and decisions reduce uncertainty and create stable progress.",
+        "perspective": "Perceiving prefers openness, discovery, and flexibility—options stay open so you can adapt to new information.",
+        "ambivalent": "Ambivalence indicates high agility: you can plan tightly when needed and stay open when exploration is more valuable."
+      },
+      "archetypes": {
+        "goalJudging": "Target Driven Closure",
+        "processJudging": "Structured Systematic Order",
+        "curiousPerspective": "Unrestrained Mental Explorer",
+        "funPerspective": "Spontaneous Experience Seeker",
+        "ambivalent": "Flexible Adaptive Navigator"
+      },
+      "archetypeDescriptions": {
+        "goalJudging": "Your orientation prioritizes clear goals and closure, so you prefer plans, targets, and decisive progress.",
+        "processJudging": "Your orientation prioritizes structured systems, so you prefer orderly steps and reliable routines.",
+        "curiousPerspective": "Your orientation prioritizes exploration, so you keep options open to follow curiosity and new information.",
+        "funPerspective": "Your orientation prioritizes spontaneity and experience, so you stay flexible and adapt as life unfolds.",
+        "ambivalent": "Your orientation flexes between structure and openness, so you shift between planning and exploration as needed."
+      },
+      "surfaceLine": {
+        "judgingGoal": "Your Surface orientation is Judging (goal-focused): you prefer closure through milestones, deliverables, and clear endpoints in everyday life.",
+        "judgingProcess": "Your Surface orientation is Judging (process-focused): you prefer closure through systems, routines, and step-by-step order in everyday life.",
+        "perspective": "Your Surface orientation is Perspective: you prefer flexibility, keeping options open, and adapting as new information arrives in everyday life.",
+        "adaptive": "Your Surface orientation is adaptive: sometimes you structure tightly, and other times you stay open—depending on what the situation demands in everyday life."
+      },
+      "innateAnchor": {
+        "judgingGoal": "Since your Innate orientation is goal-focused Judging, no matter what Surface strategy you use, you eventually want to hit targets on time and efficiently regardless of the process adopted.",
+        "judgingProcess": "Since your Innate orientation is process-focused Judging, no matter what Surface strategy you use, you eventually want to reach goals through orderly processes that follow predefined procedures and schedules. If the order is broken, you may feel irritated. You feel the best when plans proceed orderly",
+        "perspective": "Since your Innate orientation is Perspective, no matter what Surface strategy you use, you eventually want breathing room—too much effort on reaching goals or following procedures feels restrictive over time.",
+        "adaptive": "Since your Innate orientation is adaptive, no matter what Surface strategy you use, you naturally re-adjust—sometimes you make plans, and at other times you follow the natural flow of life without much planning."
+      },
+      "matched": {
+        "judgingGoal": "Both your Surface and Innate orientation are goal-closure Judging. You naturally push toward decisions and finish lines, and you also organize daily life to reach milestones efficiently.",
+        "judgingProcess": "Both your Surface and Innate orientation are process-closure Judging. You naturally seek order through systems and routines, and you also execute that way day-to-day.",
+        "perspective": "Both your Surface and Innate orientation are Perspective. You naturally keep options open, prefer flexibility, and stay responsive to new information rather than forcing early closure.",
+        "adaptive": "Both your Surface and Innate orientation are adaptive. You can plan tightly when it matters, and stay open when exploration matters—without getting stuck in one mode."
+      },
+      "subtypeMismatch": {
+        "goalVsProcess": "Your Surface orientation pushes for finish lines and milestones, but your Innate baseline wants an orderly process in reaching goals. This can cause “deadline-driven execution with process friction inside”: you want results fast, but you feel best when the process is orderly. When the process feels random, it may irritate you in the background.",
+        "processVsGoal": "Your Surface orientation prefers orderly processes for reaching goals, but your Innate baseline wants clear milestones. This can create “orderly process vs. goal-reaching friction”: you follow procedures and schedules on the surface, yet feel irritated when goals are not reached efficiently. You feel best when procedures serve the purpose of reaching endpoints efficiently."
+      },
+      "behaviorNote": "Because Judging/Perspective is an innate choice on cognition and ways to achieve goals, we pick the Innate Persona as the basis for setting the label of this dimension.",
+      "matrix": {
+        "innateTitle": "Innate Persona",
+        "innateNote": "Your default organizational orientation.",
+        "surfaceTitle": "Surface Persona",
+        "surfaceNote": "Your day-to-day execution orientation.",
+        "syncTitle": "Sync",
+        "syncAligned": "Aligned",
+        "syncFlexible": "Flexible",
+        "syncNoteAligned": "Baseline and surface mode match.",
+        "syncNoteFlexible": "You can switch modes across contexts."
+      }
+    }
+  }
+}

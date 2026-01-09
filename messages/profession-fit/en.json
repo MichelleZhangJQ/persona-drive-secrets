@@ -1,0 +1,102 @@
+{
+  "professionFit": {
+    "loading": {
+      "title": "Running your fit simulation..."
+    },
+    "auth": {
+      "signIn": "Please sign in",
+      "accessRestricted": "Access Restricted"
+    },
+    "missingTests": {
+      "title": "Finish the tests first",
+      "subtitle": "Profession fit needs your Imposed, Surface, and Innate persona results.",
+      "imposed": "Imposed Test",
+      "surface": "Surface Test",
+      "innate": "Innate Test"
+    },
+    "errors": {
+      "unavailableTitle": "Couldn’t load this report",
+      "unavailableBody": "Please refresh and try again."
+    },
+    "status": {
+      "cached": "Derived data loaded from database",
+      "recomputed": "Derived data recalculated",
+      "upsertFailed": "Derived data saved locally (sync pending)",
+      "upsertDetailFallback": "database not responding"
+    },
+    "header": {
+      "titleStart": "Profession",
+      "titleAccent": "Fit",
+      "subtitle": "Matching your drive structure to real-world job demands",
+      "dashboardCta": "Dashboard"
+    },
+    "about": {
+      "title": "About this report",
+      "body": "This report simulates fit using your (1) surface persona, (2) innate persona, (3) competence/self-interest, and (4) instrumentation routes. You can view match in two ways: <strong>Aspired Job Match</strong> (uses <strong>SurfaceAdjustedAspired</strong>) and <strong>Job Match</strong> (uses <strong>SurfaceAdjusted</strong>). Both views consider energy drain. Aspired match also reflects what you value and what you’re trying to grow into—so your “best fits” can shift depending on which lens you use.",
+      "note": "<strong>Quick note:</strong> these patterns change over time. It’s worth re-checking every so often."
+    },
+    "majors": {
+      "title": "Pick up to 10 occupational majors you’re considering.",
+      "selected": "Selected: {count}/{max}",
+      "emptyTitle": "Choose majors to start",
+      "emptyBody": "Once you select majors, you’ll get the top 10 fits plus a detailed breakdown you can click into."
+    },
+    "mode": {
+      "title": "How do you want to view match?",
+      "aspired": "Current aspired job match",
+      "job": "Job match"
+    },
+    "top10": {
+      "title": "Top 10 Best Fits",
+      "subtitle": "{count} subtypes",
+      "scoreNote": "Match score is <strong>0–5</strong>, where <strong>5</strong> is the strongest match."
+    },
+    "active": {
+      "matchLabel": "Matching score (5 best)",
+      "matchShort": "Match (5 best)",
+      "drainLabel": "Drain:",
+      "drainInline": "Estimated drain:",
+      "interpretationTitle": "How to interpret this",
+      "interpretationBody": "This view ranks match using <strong>{effective}</strong>. We compute the difference by subtracting the job’s demand from your effective surface profile. Drives shown in red are where you’re below the job’s demand (deficits), and drives shown in green are where you’re above it (surpluses)."
+    },
+    "table": {
+      "title": "Drive table",
+      "legend": "<strong>Adj Surface</strong> = SurfaceAdjusted. <strong>Surface (Aspired)</strong> = SurfaceAdjustedAspired. <strong>Diff</strong> = {diffLabel}.",
+      "colDrive": "Drive",
+      "colAdjSurface": "Adj Surface",
+      "colSurfaceAspired": "Surface (Aspired)",
+      "colJobDemand": "Job Demand",
+      "colDiff": "Diff",
+      "diffAspired": "Surface(Aspired) − Job Demand",
+      "diffJob": "Adj Surface − Job Demand"
+    },
+    "custom": {
+      "title": "Build my own job profile",
+      "jobNamePlaceholder": "Job name",
+      "defaultJobName": "My Dream Job Drive Distribution",
+      "majorLabel": "Custom",
+      "run": "Run custom fit"
+    },
+    "noSelection": {
+      "title": "No selection yet",
+      "body": "Pick a profession subtype on the left to see the full breakdown."
+    },
+    "footer": {
+      "titleStart": "Next",
+      "titleAccent": "Steps",
+      "body": "If a job shows a lower match score, it doesn’t automatically mean “don’t do it.” Usually it means (1) you’ll want an environment that supports your deficit drives, and (2) it helps to reduce energy drains so your effort goes further.",
+      "drainCta": "View your Energy Drain and Adaptation Analysis →",
+      "status": "Simulation complete. Fit vectors stabilized.",
+      "dashboardCta": "Dashboard"
+    },
+    "driveDef": {
+      "Exploration": "Curiosity + variety—wanting new ideas, experiences, and possibilities.",
+      "Achievement": "Goal drive—pushing to accomplish, improve, and master challenges.",
+      "Dominance": "Direction + control—wanting influence, leadership, and decision power.",
+      "Pleasure": "Comfort + enjoyment—seeking fun, ease, and immediate rewards.",
+      "Care": "Nurture drive—protecting, supporting, and emotionally holding others.",
+      "Affiliation": "Belonging drive—connection, teamwork, and being part of a group.",
+      "Value": "Principles drive—staying aligned with what feels right and meaningful."
+    }
+  }
+}
