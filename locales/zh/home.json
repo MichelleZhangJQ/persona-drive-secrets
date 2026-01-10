@@ -27,9 +27,10 @@
       "note": "完成一套短测试包即可解锁 10 天游览权限。"
     }
   },
-    "progress": {
+  "progress": {
     "title": "完成测试并获取总结",
     "step": "步骤 {number}",
+    "completeTest": "请完成该测试",
     "hint": "先完成外在，再完成表层与内在，最后查看综合报告。",
     "steps": {
       "imposed": { "label": "外在人格", "tag": "环境" },

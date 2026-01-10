@@ -526,11 +526,11 @@ export default function HomePage() {
                     </div>
                     <div className="text-[12px] font-semibold text-slate-700">{t(step.tagKey)}</div>
                     <div className="text-sm font-black text-slate-900">{t(step.labelKey)}</div>
-                    {stepMissing ? (
-                      <div className="mt-2 text-[9px] font-black uppercase tracking-widest text-rose-600">
-                        Complete this test
-                      </div>
-                    ) : null}
+                {stepMissing ? (
+                  <div className="mt-2 text-[9px] font-black uppercase tracking-widest text-rose-600">
+                    {t("progress.completeTest")}
+                  </div>
+                ) : null}
                   </Link>
                 );
               })}
