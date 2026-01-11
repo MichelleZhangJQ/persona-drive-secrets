@@ -37,6 +37,10 @@ type OrderRow = {
   provider_order_id: string | null;
   created_at: string | null;
   paid_at: string | null;
+  metadata?: {
+    membership_discount_applied?: number | null;
+    active_report_credit_eligible?: number | null;
+  } | null;
   order_items?: OrderItem[];
 };
 
@@ -104,7 +108,7 @@ export default function OrdersPage() {
         .from("orders")
         .select(
           `
-          id, status, currency, subtotal, credits_applied, amount_due, payment_provider,
+          id, status, currency, subtotal, credits_applied, amount_due, payment_provider, metadata,
           provider_order_id, created_at, paid_at,
           order_items (
             id, item_type, item_id, title, quantity, unit_price, months, report_index, granted_expires_at, created_at
@@ -115,7 +119,15 @@ export default function OrdersPage() {
         .order("created_at", { ascending: false });
 
       if (queryError) throw queryError;
-      setOrders((data as OrderRow[]) ?? []);
+      const nextOrders = (data as OrderRow[]) ?? [];
+      setOrders(nextOrders);
+      setExpanded((prev) => {
+        const next: Record<string, boolean> = { ...prev };
+        nextOrders.forEach((order) => {
+          if (!(order.id in next)) next[order.id] = true;
+        });
+        return next;
+      });
     } catch {
       setError("loadFailed");
     } finally {
@@ -266,7 +278,7 @@ export default function OrdersPage() {
                   <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-[11px] text-slate-600 font-medium">
                     <div>
                       <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                        {tr("orders.card.subtotal")}
+                        {tr("orders.card.total")}
                       </div>
                       <div className="mt-1 font-bold text-slate-900">
                         ${Number(order.subtotal || 0).toFixed(2)}
@@ -274,7 +286,7 @@ export default function OrdersPage() {
                     </div>
                     <div>
                       <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                        {tr("orders.card.credits")}
+                        {tr("orders.card.storeCredits")}
                       </div>
                       <div className="mt-1 font-bold text-slate-900">
                         ${Number(order.credits_applied || 0).toFixed(2)}
@@ -282,18 +294,18 @@ export default function OrdersPage() {
                     </div>
                     <div>
                       <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                        {tr("orders.card.due")}
+                        {tr("orders.card.reportCredits")}
                       </div>
                       <div className="mt-1 font-bold text-slate-900">
-                        ${Number(order.amount_due || 0).toFixed(2)}
+                        ${Number(order.metadata?.membership_discount_applied || 0).toFixed(2)}
                       </div>
                     </div>
                     <div>
                       <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                        {tr("orders.card.provider")}
+                        {tr("orders.card.topUp")}
                       </div>
                       <div className="mt-1 font-bold text-slate-900">
-                        {formatProviderLabel(order.payment_provider)}
+                        ${Number(order.amount_due || 0).toFixed(2)}
                       </div>
                     </div>
                   </div>

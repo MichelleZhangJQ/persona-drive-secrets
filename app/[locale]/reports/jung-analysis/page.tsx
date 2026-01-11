@@ -40,6 +40,12 @@ function HtmlBlock({ html }: { html: string }) {
 const isAnonymousUser = (user: any) =>
   user?.is_anonymous === true || user?.app_metadata?.provider === "anonymous";
 
+function isFutureTs(ts: any) {
+  if (!ts) return false;
+  const d = new Date(ts);
+  return Number.isFinite(d.getTime()) && d > new Date();
+}
+
 const AMBIVALENT_LABELS = ["I/E", "N/S", "T/F", "J/P"] as const;
 const AXIS_LABELS = ["I/E", "N/S", "T/F", "J/P"] as const;
 const POLE_ZH: Record<string, string> = {
@@ -300,11 +306,21 @@ export default function JungAnalysisReportPage() {
       }
 
       if (isAnonymousUser(user)) {
-        if (active) setAuthGate("anon");
-        return;
-      }
+        const { data: profile, error: profileErr } = await supabase
+          .from("profiles")
+          .select("report_4_expires_at")
+          .eq("id", user.id)
+          .maybeSingle();
 
-      if (active) setAuthGate("user");
+        if (profileErr || !isFutureTs(profile?.report_4_expires_at)) {
+          if (active) setAuthGate("anon");
+          return;
+        }
+
+        if (active) setAuthGate("user");
+      } else {
+        if (active) setAuthGate("user");
+      }
 
       const result = await ensurePersonaDerived({ supabase, userId: user.id });
       if (!active) return;

@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useMessages, useTranslations } from "next-intl";
 import { AuthHeader } from "@/components/AuthHeader";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { isAnonymousUser } from "@/lib/auth/isAnonymousUser";
 import { usePersonaDerived } from "@/lib/persona-derived/usePersonaDerived";
 import { ensurePersonaDerived } from "@/lib/persona-derived/persona-derived";
 import { driveNames } from "@/lib/core-utils/fit-core";
@@ -131,10 +132,12 @@ export default function OverallReportPage() {
   const params = useParams();
   const locale = typeof params?.locale === "string" ? params.locale : "en";
   const t = useTranslations("overall");
+  const tHome = useTranslations("home");
   const messages = useMessages();
   const overallMessages = (messages as any)?.overall ?? {};
   const supabase = createBrowserSupabaseClient();
   const [profile, setProfile] = useState<any>(null);
+  const [isGuest, setIsGuest] = useState(true);
 
   const hasOverallKey = useCallback(
     (key: string) => {
@@ -236,6 +239,13 @@ export default function OverallReportPage() {
 
   useEffect(() => {
     let active = true;
+    const loadAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!active) return;
+      setIsGuest(!user || isAnonymousUser(user));
+    };
     const loadProfile = async () => {
       const {
         data: { user },
@@ -250,6 +260,7 @@ export default function OverallReportPage() {
 
       if (active) setProfile(data ?? null);
     };
+    void loadAuth();
     void loadProfile();
     return () => {
       active = false;
@@ -499,12 +510,29 @@ export default function OverallReportPage() {
               </div>
             </div>
             <div className="mt-auto">
-              <Link
-                href={withLocale("/reports/jung-analysis")}
-                className="block w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
-              >
-                {t("jung.cta")}
-              </Link>
+              {isGuest ? (
+                <div className="grid grid-cols-1 gap-2">
+                  <Link
+                    href={withLocale("/upgrade")}
+                    className="block w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
+                  >
+                    {tHome("premium.cta.saveAccount")}
+                  </Link>
+                  <Link
+                    href={withLocale("/payment?report=jung-analysis")}
+                    className="block w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                  >
+                    {tHome("premium.cta.unlock")}
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  href={withLocale("/reports/jung-analysis")}
+                  className="block w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
+                >
+                  {t("jung.cta")}
+                </Link>
+              )}
             </div>
           </div>
 

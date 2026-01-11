@@ -35,6 +35,7 @@ const LEMON_CHECKOUT_URL = process.env.NEXT_PUBLIC_LEMON_CHECKOUT_URL ?? "";
 const IS_DEMO_CHECKOUT = (process.env.NEXT_PUBLIC_CHECKOUT_LIVE ?? "false") !== "true";
 
 const REPORTS = [
+  { id: "jung-analysis", field: null, title: "Jung Personality Trait Analysis", price: 3.99, reportIndex: 4 },
   { id: "relationship", field: "has_access_report_1", title: "Ideal Partner Analysis", price: 3.99, reportIndex: 1 },
   { id: "drain-analysis", field: "has_access_report_2", title: "Energy Drain and Adaptation Analysis", price: 3.99, reportIndex: 2 },
   { id: "profession-fit", field: "has_access_report_3", title: "Occupation Analysis", price: 3.99, reportIndex: 3 },
@@ -46,16 +47,18 @@ const REPORT_ID_ALIASES: Record<string, (typeof REPORTS)[number]["id"]> = {
   playbook: "profession-fit",
   occupation: "profession-fit",
   profession: "profession-fit",
+  jung: "jung-analysis",
 };
 
 const REPORT_UNIT_PRICE = 3.99;
 const REPORT_ACCESS_MONTHS = 1;
 const REPORT_ACCESS_DAYS_ANON = 1;
 
-const REPORT_EXPIRES_FIELD: Record<1 | 2 | 3, string> = {
+const REPORT_EXPIRES_FIELD: Record<1 | 2 | 3 | 4, string> = {
   1: "report_1_expires_at",
   2: "report_2_expires_at",
   3: "report_3_expires_at",
+  4: "report_4_expires_at",
 };
 
 function isFutureTs(ts: any) {
@@ -64,9 +67,9 @@ function isFutureTs(ts: any) {
   return Number.isFinite(d.getTime()) && d > new Date();
 }
 
-function isReportActive(profile: any, reportIndex: 1 | 2 | 3) {
+function isReportActive(profile: any, reportIndex: 1 | 2 | 3 | 4) {
   const boolField = `has_access_report_${reportIndex}`;
-  if (profile?.[boolField] === true) return true;
+  if (profile?.[boolField] === true) return true; // override-only
   const expField = REPORT_EXPIRES_FIELD[reportIndex];
   return isFutureTs(profile?.[expField]);
 }
@@ -103,7 +106,7 @@ function buildOrderItems({
 }: {
   selectedReports: string[];
   selectedPlan: MembershipPlan | null;
-  reportGrantExpiresAt: (reportIndex: 1 | 2 | 3) => string | null;
+  reportGrantExpiresAt: (reportIndex: 1 | 2 | 3 | 4) => string | null;
   membershipGrantExpiresAt: string | null;
   isAnonymous: boolean;
 }) {
@@ -112,6 +115,7 @@ function buildOrderItems({
   for (const rid of selectedReports) {
     const cfg = REPORTS.find((r) => r.id === rid);
     if (!cfg) continue;
+
     items.push({
       item_type: "report",
       item_id: cfg.id,
@@ -120,7 +124,7 @@ function buildOrderItems({
       unit_price: cfg.price,
       report_index: cfg.reportIndex,
       months: isAnonymous ? 0 : REPORT_ACCESS_MONTHS,
-      granted_expires_at: reportGrantExpiresAt(cfg.reportIndex),
+      granted_expires_at: reportGrantExpiresAt(cfg.reportIndex as 1 | 2 | 3 | 4),
       metadata: isAnonymous ? { access_days: REPORT_ACCESS_DAYS_ANON } : {},
     });
   }
@@ -183,7 +187,10 @@ export default function PaymentPage() {
   const [paymentStage, setPaymentStage] = useState<"idle" | "pending_external" | "success">("idle");
   const [paymentCenterOpen, setPaymentCenterOpen] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [hasAuthUser, setHasAuthUser] = useState(false);
   const [status, setStatus] = useState<{ type: "error" | "success"; msg: string } | null>(null);
+
+  const jungFreeForSignedIn = useMemo(() => hasAuthUser && !isAnonymous, [hasAuthUser, isAnonymous]);
 
   // Load Lemon script for overlay mode
   useEffect(() => {
@@ -208,11 +215,13 @@ export default function PaymentPage() {
     } = await supabase.auth.getUser();
 
     if (!user) {
+      setHasAuthUser(false);
       setIsAnonymous(false);
       setProfile(null);
       return null;
     }
 
+    setHasAuthUser(true);
     setIsAnonymous(isAnonymousUser(user));
 
     const { data: profileData, error: profileErr } = await supabase
@@ -222,8 +231,6 @@ export default function PaymentPage() {
       .maybeSingle();
 
     if (profileErr) {
-      // If RLS blocks select, profile will look "missing".
-      // That's OK; we only create on success anyway.
       console.warn("fetchProfileData error:", profileErr);
       setProfile(null);
       return null;
@@ -275,6 +282,11 @@ export default function PaymentPage() {
   useEffect(() => {
     (async () => {
       const profileData = await fetchProfileData();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const hasUser = !!user;
+      const isAnonUser = user ? isAnonymousUser(user) : false;
       const membershipIsActive = isFutureTs(profileData?.sub_expires_at);
 
       const initialRaw = searchParams.get("report");
@@ -282,7 +294,15 @@ export default function PaymentPage() {
 
       if (initial) {
         const cfg = REPORTS.find((r) => r.id === initial);
-        if (cfg && !membershipIsActive && !isReportActive(profileData, cfg.reportIndex)) {
+        const isJung = cfg?.id === "jung-analysis";
+
+        // Jung: free if signed-in (non-anon), otherwise use expiry/override
+        const jungActive = (hasUser && !isAnonUser) || isReportActive(profileData, 4);
+
+        const reportActive =
+          cfg && !isJung ? isReportActive(profileData, cfg.reportIndex as 1 | 2 | 3 | 4) : jungActive;
+
+        if (cfg && !membershipIsActive && !reportActive) {
           setSelectedReports([initial]);
         }
       }
@@ -295,6 +315,7 @@ export default function PaymentPage() {
 
   const membershipActive = useMemo(() => isFutureTs(profile?.sub_expires_at), [profile?.sub_expires_at]);
 
+  // Rule: membership covers reports → disable & clear report selections
   useEffect(() => {
     if (selectedPlanId || membershipActive) setSelectedReports([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -304,6 +325,7 @@ export default function PaymentPage() {
     if (isAnonymous) setSelectedPlanId(null);
   }, [isAnonymous]);
 
+  // Reset payment state when cart changes
   useEffect(() => {
     setPaymentStage("idle");
     setPaymentCenterOpen(false);
@@ -366,16 +388,31 @@ export default function PaymentPage() {
     else setCreditError(null);
   }, [creditsWanted, balance]);
 
-  const allUnlocked = useMemo(
-    () => REPORTS.every((r) => isReportActive(profile, r.reportIndex)),
-    [profile]
+  const isJungReport = useCallback((report: (typeof REPORTS)[number]) => report.id === "jung-analysis", []);
+
+  // IMPORTANT: Jung is “active” for signed-in users regardless of expiry, but for guests only expiry/override applies.
+  const reportIsActive = useCallback(
+    (report: (typeof REPORTS)[number]) => {
+      if (isJungReport(report)) {
+        if (jungFreeForSignedIn) return true;
+        return isReportActive(profile, 4);
+      }
+      return isReportActive(profile, report.reportIndex as 1 | 2 | 3 | 4);
+    },
+    [jungFreeForSignedIn, profile, isJungReport]
   );
+
+  const allUnlocked = useMemo(() => REPORTS.every((r) => reportIsActive(r)), [reportIsActive]);
 
   const membershipSelected = !!selectedPlanId;
 
   const toggleReport = (id: string, hasAccess: boolean) => {
     if (hasAccess) return;
     if (membershipSelected || membershipActive) return;
+
+    // Jung: cannot be selected when signed-in (free for signed-in users)
+    if (id === "jung-analysis" && jungFreeForSignedIn) return;
+
     setSelectedReports((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
@@ -493,6 +530,9 @@ export default function PaymentPage() {
    * - determine if profile exists
    * - insert/update profile with expiration time first
    * - then create orders + items
+   *
+   * NOTE: We do NOT change profile fetching/creation logic here.
+   * Jung “free for signed-in” is UI/access logic only.
    */
   const finalizeSuccessfulPayment = useCallback(
     async (mode: "credits" | "external_simulated") => {
@@ -516,6 +556,7 @@ export default function PaymentPage() {
         if (!activeUser) throw new Error("Unable to complete payment.");
 
         const localIsAnonymous = isAnonymousUser(activeUser);
+        setHasAuthUser(true);
         setIsAnonymous(localIsAnonymous);
 
         // Determine profile existence deterministically (don’t trust state flags)
@@ -586,8 +627,11 @@ export default function PaymentPage() {
           membershipGrant = addMonths(base, planNow.months).toISOString();
         }
 
-        const reportGrant = (idx: 1 | 2 | 3) => {
+        const reportGrant = (idx: 1 | 2 | 3 | 4) => {
           if (membershipGrant) return membershipGrant;
+
+          // Guest: now + 1 day for ALL reports (including Jung).
+          // Signed-in: 1 month (this doesn’t matter for Jung since it’s free & not purchasable when signed-in).
           const newExp = localIsAnonymous
             ? addDays(now, REPORT_ACCESS_DAYS_ANON)
             : addMonths(now, REPORT_ACCESS_MONTHS);
@@ -628,6 +672,7 @@ export default function PaymentPage() {
           const newExpiry = addMonths(base, planNow.months);
           updates.sub_expires_at = newExpiry.toISOString();
 
+          updates[REPORT_EXPIRES_FIELD[4]] = newExpiry.toISOString();
           updates[REPORT_EXPIRES_FIELD[1]] = newExpiry.toISOString();
           updates[REPORT_EXPIRES_FIELD[2]] = newExpiry.toISOString();
           updates[REPORT_EXPIRES_FIELD[3]] = newExpiry.toISOString();
@@ -776,9 +821,16 @@ export default function PaymentPage() {
               )}
 
               {REPORTS.map((report) => {
-                const reportActive = isReportActive(profile, report.reportIndex);
+                const reportActive = reportIsActive(report);
                 const isSelected = selectedReports.includes(report.id);
-                const disabled = reportActive || membershipSelected || membershipActive;
+
+                // Jung: disabled when signed-in (free), OR already active (expiry/override)
+                // Other reports: disabled when active OR membership selected/active.
+                const disabled = isJungReport(report)
+                  ? reportActive // for signed-in it will be true; for guests it becomes true after expiry grants
+                  : reportActive || membershipSelected || membershipActive;
+
+                const showJungFreeLabel = isJungReport(report) && jungFreeForSignedIn;
 
                 return (
                   <button
@@ -814,7 +866,12 @@ export default function PaymentPage() {
                         >
                           {report.title}
                         </span>
-                        {reportActive ? (
+
+                        {showJungFreeLabel ? (
+                          <span className="text-[9px] font-black uppercase text-indigo-500 tracking-widest">
+                            Free access for signed-in users
+                          </span>
+                        ) : reportActive ? (
                           <span className="text-[9px] font-black uppercase text-indigo-500 tracking-widest">
                             Active Access
                           </span>

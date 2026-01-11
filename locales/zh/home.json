@@ -88,7 +88,9 @@
     }
   },
     "promo": {
-    "balance": "当前余额"
+    "balance": "当前店铺积分值",
+    "redeem": "兑换优惠码",
+    "signInNote": "注册并登录后可使用"
   },
     "footer": {
     "brand": "Persona Drive Secrets",

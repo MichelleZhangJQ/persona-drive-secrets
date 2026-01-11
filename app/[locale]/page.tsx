@@ -47,6 +47,12 @@ function jungCodeBySource(jungAxes: any, source: JungSource) {
   ];
 }
 
+function isFutureTs(ts: any) {
+  if (!ts) return false;
+  const d = new Date(ts);
+  return Number.isFinite(d.getTime()) && d > new Date();
+}
+
 function JungDim({ value }: { value: string }) {
   const isMixed = value.includes("/");
   if (!isMixed) {
@@ -552,23 +558,20 @@ export default function HomePage() {
           <div className="mx-auto max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
               {premiumReports.map((report) => {
-                const needsUpgrade = report.key === "jung-analysis" && isAnonymous;
+                const isJung = report.key === "jung-analysis";
+                const needsGuestCtas = isJung && isAnonymous;
+                const guestJungActive = isJung && isAnonymous && isFutureTs(profile?.report_4_expires_at);
                 const isFree = report.isFree === true;
                 const isUnlocked =
                   isFree || (report.key ? hasReportAccessByKey(profile, report.key) : false);
-                const href = needsUpgrade
-                  ? `/upgrade`
+                const href = needsGuestCtas
+                  ? ""
                   : isFree || isUnlocked
                   ? `/reports/${report.key}`
                   : `/payment?report=${report.key}`;
 
-                return (
-                  <Link
-                    key={report.key}
-                    href={withLocale(href)}
-                    className="w-full max-w-[340px] rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md flex flex-col min-h-[420px]"
-                    onMouseEnter={() => setHoverKey("welcome")}
-                  >
+                const cardBody = (
+                  <>
                     <div className="flex items-start justify-between mb-4">
                       <span className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-700">
                         {t(report.tagKey)}
@@ -578,7 +581,11 @@ export default function HomePage() {
                           isFree ? "text-emerald-700" : isUnlocked ? "text-emerald-600" : "text-slate-400"
                         }`}
                       >
-                        {isFree ? t("premium.status.free") : isUnlocked ? t("premium.status.granted") : t("premium.status.locked")}
+                        {isFree
+                          ? t("premium.status.free")
+                          : isUnlocked
+                          ? t("premium.status.granted")
+                          : t("premium.status.locked")}
                       </span>
                     </div>
 
@@ -591,22 +598,56 @@ export default function HomePage() {
                     {renderPreview(report.key)}
 
                     <div className="mt-auto">
-                      <div
-                        className={`w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border transition ${
-                          isFree || isUnlocked
-                            ? "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
-                            : "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
-                        }`}
-                      >
-                        {needsUpgrade
-                          ? t("premium.cta.saveAccount")
-                          : isFree
-                          ? t("premium.cta.free")
-                          : isUnlocked
-                          ? t("premium.cta.open")
-                          : t("premium.cta.unlock")}
-                      </div>
+                      {needsGuestCtas ? (
+                        <div className="grid grid-cols-1 gap-2">
+                          <Link
+                            href={withLocale("/upgrade")}
+                            className="w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
+                          >
+                            {t("premium.cta.saveAccount")}
+                          </Link>
+                          <Link
+                            href={withLocale(guestJungActive ? "/reports/jung-analysis" : "/payment?report=jung-analysis")}
+                            className="w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                          >
+                            {guestJungActive ? t("premium.cta.open") : t("premium.cta.unlock")}
+                          </Link>
+                        </div>
+                      ) : (
+                        <div
+                          className={`w-full rounded-xl py-2.5 text-center text-[10px] font-black uppercase tracking-widest border transition ${
+                            isFree || isUnlocked
+                              ? "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
+                              : "bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                          }`}
+                        >
+                          {isFree ? t("premium.cta.free") : isUnlocked ? t("premium.cta.open") : t("premium.cta.unlock")}
+                        </div>
+                      )}
                     </div>
+                  </>
+                );
+
+                if (needsGuestCtas) {
+                  return (
+                    <div
+                      key={report.key}
+                      className="w-full max-w-[340px] rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm flex flex-col min-h-[420px]"
+                      onMouseEnter={() => setHoverKey("welcome")}
+                    >
+                      {cardBody}
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={report.key}
+                    href={withLocale(href)}
+                    className="w-full max-w-[340px] rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md flex flex-col min-h-[420px]"
+                    onMouseEnter={() => setHoverKey("welcome")}
+                  >
+                    {cardBody}
                   </Link>
                 );
               })}

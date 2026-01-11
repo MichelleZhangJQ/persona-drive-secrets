@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Ticket, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 // Import the same client factory used in your Profile Panel
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 
@@ -11,6 +12,7 @@ interface PromoCodeInputProps {
 
 export default function PromoCodeInput({ onRefresh }: PromoCodeInputProps) {
   const supabase = createBrowserSupabaseClient();
+  const t = useTranslations("home");
   
   const [promoCode, setPromoCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -98,9 +100,12 @@ const handleRedeem = async (e: React.FormEvent) => {
       <div className="flex items-center gap-2 mb-4">
         <Ticket className="w-4 h-4 text-slate-400" />
         <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-          Redeem Promo
+          {t("promo.redeem")}
         </span>
       </div>
+      <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        {t("promo.signInNote")}
+      </p>
       
       <form onSubmit={handleRedeem} className="flex gap-2">
         <input 

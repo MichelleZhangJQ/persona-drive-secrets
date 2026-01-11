@@ -82,7 +82,9 @@
     }
   },
     "promo": {
-    "balance": "Current Balance"
+    "balance": "Current Balance",
+    "redeem": "Redeem Promo",
+    "signInNote": "Sign up and log in to apply"
   },
     "footer": {
     "brand": "Persona Drive Secrets",
