@@ -81,6 +81,18 @@ export default function TesterPackPage() {
 
       if (!activeUser?.id) throw new Error("no_user");
 
+      const { data: existingProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", activeUser.id)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+      if (!existingProfile) {
+        setStatus("error");
+        return;
+      }
+
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + ACCESS_DAYS);
 

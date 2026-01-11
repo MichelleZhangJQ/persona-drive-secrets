@@ -1,0 +1,9 @@
+{
+  "overall": {
+    "status": {
+      "cached": "Cached results loaded.",
+      "recomputed": "Results were recomputed.",
+      "upsertFailed": "Failed to update cached results."
+    }
+  }
+}

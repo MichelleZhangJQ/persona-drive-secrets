@@ -34,8 +34,6 @@ export function AuthHeader() {
 
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [anonAttempted, setAnonAttempted] = useState(false);
-
   const sage = "#93a97c";
   const mutedBlue = "#7c94be";
   const dustyPurple = "#512d94ff";
@@ -43,32 +41,10 @@ export function AuthHeader() {
 
   const [userDisplay, setUserDisplay] = useState("User");
 
-  const shouldAutoAnon = useMemo(() => {
-    const p = stripLocale(pathname || "/");
-    return !(
-      p === "/login" ||
-      p === "/signup" ||
-      p === "/upgrade" ||
-      p.startsWith("/auth/")
-    );
-  }, [pathname, stripLocale]);
-
   const fetchSession = useCallback(async () => {
     const {
       data: { session: currentSession },
     } = await supabase.auth.getSession();
-
-    if (!currentSession && !anonAttempted && shouldAutoAnon) {
-      setAnonAttempted(true);
-      const { data: anonData } = await supabase.auth.signInAnonymously();
-      const anonSession = anonData?.session ?? null;
-      setSession(anonSession);
-      if (anonSession) {
-        setUserDisplay(anonSession.user.email?.split("@")[0] || "Guest");
-      }
-      setLoading(false);
-      return;
-    }
 
     setSession(currentSession);
 
@@ -77,7 +53,7 @@ export function AuthHeader() {
     }
 
     setLoading(false);
-  }, [supabase, anonAttempted, shouldAutoAnon]);
+  }, [supabase]);
 
   useEffect(() => {
     fetchSession();

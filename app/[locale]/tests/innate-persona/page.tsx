@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { submitTestDataClient } from '@/lib/core-utils/client-actions';
-import { AuthHeader } from '@/components/AuthHeader';
+import { AuthHeader } from "@/components/AuthHeader";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
@@ -28,19 +27,38 @@ const QUESTIONS = [
   { id: 15 },
   { id: 16 },
   { id: 17 },
-];
+] as const;
 
+const DAYS_30_MS = 30 * 24 * 60 * 60 * 1000;
+
+function isWithin30Days(createdAt: string | null | undefined) {
+  if (!createdAt) return false;
+  const t = new Date(createdAt).getTime();
+  if (!Number.isFinite(t)) return false;
+  return Date.now() - t <= DAYS_30_MS;
+}
 
 export default function InnatePersonaPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = typeof params?.locale === "string" ? params.locale : "en";
+  const locale = typeof (params as any)?.locale === "string" ? (params as any).locale : "en";
   const t = useTranslations("tests.innate");
   const supabase = createBrowserSupabaseClient();
+
+  const themePurple = "#5d5aa6";
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [incompleteMessage, setIncompleteMessage] = useState<string | null>(null);
-  const themePurple = "#5d5aa6";
+
+  // Flags for previous record load
+  const [recordKnown, setRecordKnown] = useState(false);
+  const [recordExists, setRecordExists] = useState(false);
+  const [recordLoadError, setRecordLoadError] = useState<string | null>(null);
+
+  // Store the latest row metadata for “update vs insert”
+  const [latestRowId, setLatestRowId] = useState<number | null>(null);
+  const [latestCreatedAt, setLatestCreatedAt] = useState<string | null>(null);
 
   const withLocale = (href: string) => {
     if (!href) return `/${locale}`;
@@ -50,92 +68,197 @@ export default function InnatePersonaPage() {
     return `/${locale}/${href}`;
   };
 
-  const [answers, setAnswers] = useState<Record<number, AnswerValue>>(
-    () => QUESTIONS.reduce((acc, q) => ({ ...acc, [q.id]: 0 }), {})
-  );
+  const emptyAnswers = useMemo(() => {
+    const base: Record<number, AnswerValue> = {};
+    QUESTIONS.forEach((q) => (base[q.id] = 0));
+    return base;
+  }, []);
 
-  // 1. Logic to populate answers within a month
-  useEffect(() => {
-    async function loadLastRecord() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('innate-persona')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (data && !error) {
-        const lastDate = new Date(data.created_at);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-        // Only populate if the record is newer than 30 days
-        if (lastDate > thirtyDaysAgo) {
-          const loadedAnswers: Record<number, AnswerValue> = {};
-          QUESTIONS.forEach((q) => {
-            loadedAnswers[q.id] = (data[`q${q.id}_answer`] || 0) as AnswerValue;
-          });
-          setAnswers(loadedAnswers);
-        }
-      }
-    }
-    loadLastRecord();
-  }, [supabase]);
+  const [answers, setAnswers] = useState<Record<number, AnswerValue>>(emptyAnswers);
 
   const handleAnswerSelect = (id: number, val: number) => {
     setIncompleteMessage(null);
-    setAnswers(prev => ({ ...prev, [id]: val as AnswerValue }));
+    setAnswers((prev) => ({ ...prev, [id]: val as AnswerValue }));
   };
 
-  const getButtonStyles = (num: number, isActive: boolean) => {
-    if (isActive) return `bg-[${themePurple}] border-[${themePurple}] text-white scale-110 shadow-[0_0_25px_rgba(76,29,149,0.5)]`;
-    
-    switch (num) {
-      case 1: return 'border-[#1e1b4b] text-[#1e1b4b] hover:bg-indigo-50';
-      case 2: return 'border-indigo-200 text-indigo-300 hover:bg-indigo-50';
-      case 3: return 'border-slate-200 text-slate-400 hover:bg-slate-50';
-      case 4: return 'border-purple-200 text-purple-300 hover:bg-purple-50';
-      case 5: return 'border-[#4c1d95] text-[#4c1d95] hover:bg-purple-50';
-      default: return 'border-slate-200 text-slate-300';
-    }
-  };
+  // Fetch latest record (if any) and populate answers
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setRecordKnown(false);
+      setRecordLoadError(null);
+      setRecordExists(false);
+      setLatestRowId(null);
+      setLatestCreatedAt(null);
+
+      try {
+        const {
+          data: { user },
+          error: userErr,
+        } = await supabase.auth.getUser();
+
+        if (userErr) {
+          if (!cancelled) {
+            setRecordLoadError(userErr.message);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        if (!user) {
+          // Not signed in yet; don’t create anon session on load.
+          if (!cancelled) {
+            setAnswers(emptyAnswers);
+            setRecordExists(false);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("innate-persona")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          if (!cancelled) {
+            setRecordLoadError(error.message);
+            setRecordExists(false);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        if (!data) {
+          if (!cancelled) {
+            setAnswers(emptyAnswers);
+            setRecordExists(false);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        // Populate answers from row
+        const next: Record<number, AnswerValue> = { ...emptyAnswers };
+        for (const q of QUESTIONS) {
+          const key = `q${q.id}_answer`;
+          const v = Number((data as any)[key]);
+          next[q.id] = (Number.isFinite(v) ? v : 0) as AnswerValue;
+        }
+
+        if (!cancelled) {
+          setAnswers(next);
+          setRecordExists(true);
+          setLatestRowId((data as any).id ?? null);
+          setLatestCreatedAt((data as any).created_at ?? null);
+          setRecordKnown(true);
+        }
+      } catch (e: any) {
+        if (!cancelled) {
+          setRecordLoadError(e?.message ?? "Unknown error");
+          setRecordKnown(true);
+          setRecordExists(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase, emptyAnswers]);
 
   const handleSave = async () => {
     if (isSubmitting) return;
+
     const hasMissing = QUESTIONS.some((q) => answers[q.id] === 0);
     if (hasMissing) {
       setSaveMessage(null);
       setIncompleteMessage(t("incomplete"));
       return;
     }
+
     setIsSubmitting(true);
-    
-    const dataToSend: Record<string, number> = {};
-    Object.entries(answers).forEach(([id, val]) => {
-      dataToSend[`q${id}_answer`] = val;
-    });
+    setSaveMessage(null);
+    setIncompleteMessage(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      // Ensure we have a user (anonymous sign-in happens ONLY on save)
+      let {
+        data: { user },
+        error: userErr,
+      } = await supabase.auth.getUser();
+
+      if (userErr) throw userErr;
+
       if (!user) {
-        await supabase.auth.signInAnonymously();
+        const { error: anonErr } = await supabase.auth.signInAnonymously();
+        if (anonErr) throw anonErr;
+
+        const again = await supabase.auth.getUser();
+        user = again.data.user ?? null;
       }
 
-      const result = await submitTestDataClient('innate-persona', dataToSend);
-      if (result?.success) {
-        router.refresh();
-        setSaveMessage(t("saved"));
-        setIncompleteMessage(null);
-      } else {
-        setIsSubmitting(false);
-        alert(t("error"));
+      if (!user) throw new Error("No user session available.");
+
+      // Authoritative fetch latest row again (avoid stale flags)
+      const { data: latest, error: latestErr } = await supabase
+        .from("innate-persona")
+        .select("id,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestErr) throw latestErr;
+
+      const nowIso = new Date().toISOString();
+
+      // Build payload of answers
+      const payload: Record<string, any> = {
+        user_id: user.id,
+        updated_at: nowIso,
+      };
+      for (const q of QUESTIONS) {
+        payload[`q${q.id}_answer`] = answers[q.id];
       }
-    } catch (e) {
+
+      // Update within 30 days; otherwise insert a new row
+      if (latest?.id && isWithin30Days(latest.created_at)) {
+        const { error: updErr } = await supabase
+          .from("innate-persona")
+          .update(payload)
+          .eq("id", latest.id);
+
+        if (updErr) throw updErr;
+
+        setRecordExists(true);
+        setLatestRowId(latest.id);
+        setLatestCreatedAt(latest.created_at ?? null);
+      } else {
+        payload.created_at = nowIso;
+        const { data: ins, error: insErr } = await supabase
+          .from("innate-persona")
+          .insert(payload)
+          .select("id,created_at")
+          .single();
+
+        if (insErr) throw insErr;
+
+        setRecordExists(true);
+        setLatestRowId((ins as any)?.id ?? null);
+        setLatestCreatedAt((ins as any)?.created_at ?? nowIso);
+      }
+
+      router.refresh();
+      setSaveMessage(t("saved"));
+    } catch (e: any) {
       console.error("Submission error:", e);
+      alert(t("error"));
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -150,6 +273,9 @@ export default function InnatePersonaPage() {
             {t("title")}
           </h1>
           <p className="text-slate-500 text-xs mt-1 font-medium italic">{t("subtitle")}</p>
+
+          {/* No hardcoded English text to keep zh clean; flags kept for logic/diagnostics */}
+          {/* If you want a UI indicator later, we can add i18n keys. */}
         </header>
 
         <div className="space-y-6">
@@ -179,13 +305,13 @@ export default function InnatePersonaPage() {
                     {[1, 2, 3, 4, 5].map((num) => (
                       <button
                         key={num}
+                        type="button"
                         onClick={() => handleAnswerSelect(q.id, num)}
-                        className={`h-9 w-9 rounded-full border-2 font-black transition-all flex items-center justify-center text-sm
-                          ${
-                            answers[q.id] === num
-                              ? "text-white scale-110 shadow-md"
-                              : "border-slate-200 text-slate-300 hover:border-slate-400"
-                          }`}
+                        className={`h-9 w-9 rounded-full border-2 font-black transition-all flex items-center justify-center text-sm ${
+                          answers[q.id] === num
+                            ? "text-white scale-110 shadow-md"
+                            : "border-slate-200 text-slate-300 hover:border-slate-400"
+                        }`}
                         style={answers[q.id] === num ? { backgroundColor: themePurple, borderColor: themePurple } : {}}
                       >
                         {num}
@@ -216,6 +342,7 @@ export default function InnatePersonaPage() {
             </Link>
 
             <button
+              type="button"
               onClick={handleSave}
               disabled={isSubmitting}
               className="rounded-xl py-3 text-center font-black text-white shadow-lg transition-all active:scale-95 disabled:bg-slate-300 uppercase tracking-widest text-xs"
@@ -233,6 +360,9 @@ export default function InnatePersonaPage() {
             </Link>
           </div>
         </div>
+
+        {/* Internal flags retained (not displayed); helpful for debugging */}
+        {/* recordKnown={String(recordKnown)} recordExists={String(recordExists)} recordLoadError={recordLoadError} */}
       </main>
     </div>
   );

@@ -31,7 +31,6 @@ const LEMON_CHECKOUT_MODE =
   (process.env.NEXT_PUBLIC_LEMON_CHECKOUT_MODE as "hosted" | "overlay" | undefined) ?? "hosted";
 const LEMON_CHECKOUT_URL = process.env.NEXT_PUBLIC_LEMON_CHECKOUT_URL ?? "";
 
-// ✅ Minimal: demo/simulation notice flag.
 // Treat as demo unless you explicitly set NEXT_PUBLIC_CHECKOUT_LIVE="true"
 const IS_DEMO_CHECKOUT = (process.env.NEXT_PUBLIC_CHECKOUT_LIVE ?? "false") !== "true";
 
@@ -41,7 +40,6 @@ const REPORTS = [
   { id: "profession-fit", field: "has_access_report_3", title: "Occupation Analysis", price: 3.99, reportIndex: 3 },
 ] as const;
 
-// Backward-compatible aliases (old links)
 const REPORT_ID_ALIASES: Record<string, (typeof REPORTS)[number]["id"]> = {
   instrumentation: "relationship",
   adaptive: "drain-analysis",
@@ -184,10 +182,10 @@ export default function PaymentPage() {
   const [externalProcessing, setExternalProcessing] = useState(false);
   const [paymentStage, setPaymentStage] = useState<"idle" | "pending_external" | "success">("idle");
   const [paymentCenterOpen, setPaymentCenterOpen] = useState(false);
-  const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [status, setStatus] = useState<{ type: "error" | "success"; msg: string } | null>(null);
 
+  // Load Lemon script for overlay mode
   useEffect(() => {
     if (LEMON_CHECKOUT_MODE !== "overlay") return;
     if (typeof window === "undefined") return;
@@ -203,64 +201,37 @@ export default function PaymentPage() {
     };
   }, []);
 
+  // Fetch profile (does NOT create profiles)
   const fetchProfileData = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    let activeUser = user;
-    if (!activeUser) {
-      const { data: anonData } = await supabase.auth.signInAnonymously();
-      activeUser = anonData?.user ?? null;
-    }
-
-    if (!activeUser) {
-      router.push(withLocale("/login"));
+    if (!user) {
+      setIsAnonymous(false);
+      setProfile(null);
       return null;
     }
 
-    setIsAnonymous(isAnonymousUser(activeUser));
+    setIsAnonymous(isAnonymousUser(user));
 
     const { data: profileData, error: profileErr } = await supabase
       .from("profiles")
       .select("*")
-      .eq("id", activeUser.id)
+      .eq("id", user.id)
       .maybeSingle();
 
-    if (profileErr) throw profileErr;
-
-    if (!profileData) {
-      try {
-        const nowIso = new Date().toISOString();
-        const insertPayload = {
-          id: activeUser.id,
-          email: activeUser.email ?? null,
-          preferred_language: locale,
-          created_at: nowIso,
-          updated_at: nowIso,
-        };
-        const { error: insertErr } = await supabase.from("profiles").insert(insertPayload);
-        if (insertErr) throw insertErr;
-
-        const { data: reloaded, error: reloadErr } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", activeUser.id)
-          .maybeSingle();
-
-        if (reloadErr) throw reloadErr;
-        setProfile(reloaded ?? null);
-        return reloaded ?? null;
-      } catch (err) {
-        console.warn("Profile row missing and could not be created:", err);
-        setProfile(null);
-        return null;
-      }
+    if (profileErr) {
+      // If RLS blocks select, profile will look "missing".
+      // That's OK; we only create on success anyway.
+      console.warn("fetchProfileData error:", profileErr);
+      setProfile(null);
+      return null;
     }
 
-    setProfile(profileData);
-    return profileData;
-  }, [supabase, router, withLocale, locale]);
+    setProfile(profileData ?? null);
+    return profileData ?? null;
+  }, [supabase]);
 
   const fetchMembershipPlans = useCallback(async () => {
     setPlansLoading(true);
@@ -324,7 +295,6 @@ export default function PaymentPage() {
 
   const membershipActive = useMemo(() => isFutureTs(profile?.sub_expires_at), [profile?.sub_expires_at]);
 
-  // Rule: membership covers reports → disable & clear report selections
   useEffect(() => {
     if (selectedPlanId || membershipActive) setSelectedReports([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -334,7 +304,6 @@ export default function PaymentPage() {
     if (isAnonymous) setSelectedPlanId(null);
   }, [isAnonymous]);
 
-  // Reset payment state when cart changes
   useEffect(() => {
     setPaymentStage("idle");
     setPaymentCenterOpen(false);
@@ -431,6 +400,7 @@ export default function PaymentPage() {
       metadata: any;
     }) => {
       const insertStatus = "pending";
+
       const { data: orderRow, error: orderErr } = await supabase
         .from("orders")
         .insert({
@@ -475,6 +445,11 @@ export default function PaymentPage() {
     [supabase]
   );
 
+  /**
+   * IMPORTANT:
+   * This does NOT sign in anonymously anymore.
+   * It only opens Lemon / shows placeholder "payment center".
+   */
   const beginExternalPaymentPlaceholder = async () => {
     if (subtotal <= 0) return;
     if (creditError) return;
@@ -487,73 +462,18 @@ export default function PaymentPage() {
     }
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      let activeUser = user;
-      if (!activeUser) {
-        const { data: anonData } = await supabase.auth.signInAnonymously();
-        activeUser = anonData?.user ?? null;
-      }
-      if (!activeUser) throw new Error("Not logged in.");
-
-      const now = new Date();
-      const fresh = await fetchProfileData();
-      if (!fresh) throw new Error("Not logged in.");
-
-      let membershipGrant: string | null = null;
-      if (selectedPlan) {
-        const currentExpiry = fresh.sub_expires_at ? new Date(fresh.sub_expires_at) : null;
-        const base = currentExpiry && currentExpiry > now ? currentExpiry : now;
-        membershipGrant = addMonths(base, selectedPlan.months).toISOString();
-      }
-
-      const reportGrant = (_idx: 1 | 2 | 3) => {
-        if (membershipGrant) return membershipGrant;
-        if (isAnonymous) return addDays(now, REPORT_ACCESS_DAYS_ANON).toISOString();
-        return addMonths(now, REPORT_ACCESS_MONTHS).toISOString();
-      };
-
-      const items = buildOrderItems({
-        selectedReports,
-        selectedPlan,
-        reportGrantExpiresAt: reportGrant,
-        membershipGrantExpiresAt: membershipGrant,
-        isAnonymous,
-      });
-
-      const orderId = await createOrderWithItems({
-        freshUserId: activeUser.id,
-        status: "pending",
-        subtotalNow: subtotal,
-        creditsAppliedNow: creditsApplied,
-        dueNow: amountDue,
-        paymentProvider: "lemon_squeezy",
-        items,
-        metadata: {
-          kind: "checkout",
-          membership_discount_applied: membershipDiscountApplied,
-          active_report_credit_eligible: activeReportCreditEligible,
-        },
-      });
-
-      setActiveOrderId(orderId);
       setPaymentCenterOpen(true);
       setPaymentStage("pending_external");
 
       setStatus({
         type: "success",
-        // ✅ Minimal tweak to message (keep existing wording if you prefer)
         msg: IS_DEMO_CHECKOUT
           ? `Demo checkout: no real charges. Proceed to the payment center to simulate paying $${amountDue.toFixed(2)}.`
           : `Proceed to the payment center to pay $${amountDue.toFixed(2)}.`,
       });
 
       if (!LEMON_CHECKOUT_URL) {
-        setStatus({
-          type: "error",
-          msg: "Lemon Squeezy checkout URL is not configured.",
-        });
+        setStatus({ type: "error", msg: "Lemon Squeezy checkout URL is not configured." });
         return;
       }
 
@@ -563,10 +483,17 @@ export default function PaymentPage() {
         window.open(LEMON_CHECKOUT_URL, "_blank", "noopener,noreferrer");
       }
     } catch (e: any) {
-      setStatus({ type: "error", msg: e.message || "Failed to create pending order." });
+      setStatus({ type: "error", msg: e.message || "Failed to start external checkout." });
     }
   };
 
+  /**
+   * Success path:
+   * - ensure there is a user (if none, create anonymous user HERE)
+   * - determine if profile exists
+   * - insert/update profile with expiration time first
+   * - then create orders + items
+   */
   const finalizeSuccessfulPayment = useCallback(
     async (mode: "credits" | "external_simulated") => {
       setProcessing(true);
@@ -574,18 +501,48 @@ export default function PaymentPage() {
 
       try {
         const now = new Date();
-        const fresh = await fetchProfileData();
-        if (!fresh) throw new Error("Not logged in.");
 
-        const membershipWasActive = isFutureTs(fresh.sub_expires_at);
+        // Ensure we have a user ONLY on success
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        let activeUser = user ?? null;
+        if (!activeUser) {
+          const { data: anonData, error: anonErr } = await supabase.auth.signInAnonymously();
+          if (anonErr) throw anonErr;
+          activeUser = anonData?.user ?? null;
+        }
+        if (!activeUser) throw new Error("Unable to complete payment.");
+
+        const localIsAnonymous = isAnonymousUser(activeUser);
+        setIsAnonymous(localIsAnonymous);
+
+        // Determine profile existence deterministically (don’t trust state flags)
+        const { data: existingProfile, error: existErr } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", activeUser.id)
+          .maybeSingle();
+        if (existErr) throw existErr;
+
+        const profileExistsNow = !!existingProfile;
+        const fresh = existingProfile ?? {
+          id: activeUser.id,
+          store_credits: 0,
+          sub_expires_at: null,
+        };
+
+        const membershipWasActive = isFutureTs((fresh as any).sub_expires_at);
         if (membershipWasActive && selectedReports.length > 0) {
           throw new Error(
             "Membership is active which grants access to all individual reports already. You may extend membership time instead."
           );
         }
 
-        const freshBalance = n2(fresh.store_credits || 0);
+        const freshBalance = n2((fresh as any).store_credits || 0);
 
+        // Recompute totals at time of success (authoritative)
         const wanted = Number(creditInput);
         const wantedOk = Number.isFinite(wanted) ? wanted : 0;
 
@@ -601,6 +558,7 @@ export default function PaymentPage() {
           : (isReportActive(fresh, 1) ? 1 : 0) +
             (isReportActive(fresh, 2) ? 1 : 0) +
             (isReportActive(fresh, 3) ? 1 : 0);
+
         const activeCreditNow = activeCountNow * REPORT_UNIT_PRICE;
 
         const membershipBaseNow = planNow ? n2(planNow.price) : 0;
@@ -620,69 +578,28 @@ export default function PaymentPage() {
           );
         }
 
-        try {
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
-          let activeUser = user;
-          if (!activeUser) {
-            const { data: anonData } = await supabase.auth.signInAnonymously();
-            activeUser = anonData?.user ?? null;
-          }
-          if (!activeUser) throw new Error("Not logged in.");
-
-          let membershipGrant: string | null = null;
-          if (planNow) {
-            const currentExpiry = fresh.sub_expires_at ? new Date(fresh.sub_expires_at) : null;
-            const base = currentExpiry && currentExpiry > now ? currentExpiry : now;
-            membershipGrant = addMonths(base, planNow.months).toISOString();
-          }
-
-          const reportGrant = (idx: 1 | 2 | 3) => {
-            if (membershipGrant) return membershipGrant;
-            const newExp = isAnonymous ? addDays(now, REPORT_ACCESS_DAYS_ANON) : addMonths(now, REPORT_ACCESS_MONTHS);
-            const expField = REPORT_EXPIRES_FIELD[idx];
-            const currentExp = fresh?.[expField] ? new Date(fresh[expField]) : null;
-            const finalExp = currentExp && currentExp > newExp ? currentExp : newExp;
-            return finalExp.toISOString();
-          };
-
-          const items = buildOrderItems({
-            selectedReports,
-            selectedPlan: planNow,
-            reportGrantExpiresAt: reportGrant,
-            membershipGrantExpiresAt: membershipGrant,
-            isAnonymous,
-          });
-
-          const shouldCreateNewOrder = !(mode === "external_simulated" && activeOrderId);
-          if (shouldCreateNewOrder) {
-            const orderId = await createOrderWithItems({
-              freshUserId: activeUser.id,
-              status: dueNow > 0 ? "pending" : "paid",
-              subtotalNow,
-              creditsAppliedNow,
-              dueNow,
-              paymentProvider: dueNow > 0 ? "lemon_squeezy" : "credits",
-              items,
-              metadata: {
-                kind: "checkout",
-                membership_discount_applied: membershipDiscountNow,
-                active_report_credit_eligible: activeCreditNow,
-                mode,
-              },
-            });
-
-            setActiveOrderId(orderId);
-
-            if (dueNow <= 0) {
-              await markOrderPaid(orderId, "CREDITS");
-            }
-          }
-        } catch (e) {
-          console.warn("Order logging failed:", e);
+        // Compute grants
+        let membershipGrant: string | null = null;
+        if (planNow) {
+          const currentExpiry = (fresh as any).sub_expires_at ? new Date((fresh as any).sub_expires_at) : null;
+          const base = currentExpiry && currentExpiry > now ? currentExpiry : now;
+          membershipGrant = addMonths(base, planNow.months).toISOString();
         }
 
+        const reportGrant = (idx: 1 | 2 | 3) => {
+          if (membershipGrant) return membershipGrant;
+          const newExp = localIsAnonymous
+            ? addDays(now, REPORT_ACCESS_DAYS_ANON)
+            : addMonths(now, REPORT_ACCESS_MONTHS);
+
+          const expField = REPORT_EXPIRES_FIELD[idx];
+          const currentExp = (fresh as any)?.[expField] ? new Date((fresh as any)[expField]) : null;
+          const finalExp = currentExp && currentExp > newExp ? currentExp : newExp;
+
+          return finalExp.toISOString();
+        };
+
+        // Prepare profile updates
         const updates: any = {
           store_credits: freshBalance - creditsAppliedNow,
           updated_at: new Date().toISOString(),
@@ -692,16 +609,21 @@ export default function PaymentPage() {
         selectedReports.forEach((id) => {
           const cfg = REPORTS.find((r) => r.id === id);
           if (!cfg) return;
+
           const expField = REPORT_EXPIRES_FIELD[cfg.reportIndex];
-          const currentExp = fresh?.[expField] ? new Date(fresh[expField]) : null;
-          const newExp = isAnonymous ? addDays(now, REPORT_ACCESS_DAYS_ANON) : addMonths(now, REPORT_ACCESS_MONTHS);
+          const currentExp = (fresh as any)?.[expField] ? new Date((fresh as any)[expField]) : null;
+
+          const newExp = localIsAnonymous
+            ? addDays(now, REPORT_ACCESS_DAYS_ANON)
+            : addMonths(now, REPORT_ACCESS_MONTHS);
+
           const finalExp = currentExp && currentExp > newExp ? currentExp : newExp;
           updates[expField] = finalExp.toISOString();
         });
 
-        // Extend membership
+        // Extend membership (and align report expiries to membership expiry)
         if (planNow) {
-          const currentExpiry = fresh.sub_expires_at ? new Date(fresh.sub_expires_at) : null;
+          const currentExpiry = (fresh as any).sub_expires_at ? new Date((fresh as any).sub_expires_at) : null;
           const base = currentExpiry && currentExpiry > now ? currentExpiry : now;
           const newExpiry = addMonths(base, planNow.months);
           updates.sub_expires_at = newExpiry.toISOString();
@@ -711,8 +633,53 @@ export default function PaymentPage() {
           updates[REPORT_EXPIRES_FIELD[3]] = newExpiry.toISOString();
         }
 
-        const { error } = await supabase.from("profiles").update(updates).eq("id", fresh.id);
-        if (error) throw error;
+        // 1) write profile first
+        if (!profileExistsNow) {
+          const insertPayload = {
+            id: activeUser.id,
+            email: activeUser.email ?? null,
+            preferred_language: locale,
+            created_at: new Date().toISOString(),
+            updated_at: updates.updated_at,
+            ...updates,
+          };
+          const { error: insErr } = await supabase.from("profiles").insert(insertPayload);
+          if (insErr) throw insErr;
+        } else {
+          const { error: updErr } = await supabase.from("profiles").update(updates).eq("id", activeUser.id);
+          if (updErr) throw updErr;
+        }
+
+        // 2) then write order + items
+        const items = buildOrderItems({
+          selectedReports,
+          selectedPlan: planNow,
+          reportGrantExpiresAt: reportGrant,
+          membershipGrantExpiresAt: membershipGrant,
+          isAnonymous: localIsAnonymous,
+        });
+
+        const orderId = await createOrderWithItems({
+          freshUserId: activeUser.id,
+          status: dueNow > 0 ? "pending" : "paid",
+          subtotalNow,
+          creditsAppliedNow,
+          dueNow,
+          paymentProvider: dueNow > 0 ? "lemon_squeezy" : "credits",
+          items,
+          metadata: {
+            kind: "checkout",
+            membership_discount_applied: membershipDiscountNow,
+            active_report_credit_eligible: activeCreditNow,
+            mode,
+          },
+        });
+
+        if (mode === "external_simulated") {
+          await markOrderPaid(orderId, "SIMULATED_PROVIDER_ORDER_ID");
+        } else if (dueNow <= 0) {
+          await markOrderPaid(orderId, "CREDITS");
+        }
 
         setPaymentStage("success");
         setStatus({ type: "success", msg: "Payment successful! Your access has been updated." });
@@ -724,24 +691,20 @@ export default function PaymentPage() {
         setSelectedPlanId(null);
         setCreditInput("0");
         setPaymentCenterOpen(false);
-        setActiveOrderId(null);
       } catch (err: any) {
         setStatus({ type: "error", msg: err.message || "Payment failed." });
       } finally {
         setProcessing(false);
       }
     },
-    [fetchProfileData, creditInput, plans, selectedPlanId, selectedReports, supabase, activeOrderId]
+    [creditInput, createOrderWithItems, fetchProfileData, markOrderPaid, plans, selectedPlanId, selectedReports, supabase, locale]
   );
 
   const simulateExternalSuccess = async () => {
     setExternalProcessing(true);
     try {
-      if (!activeOrderId) throw new Error("No pending order found. Click “Top Up Balance” first.");
       await new Promise((r) => setTimeout(r, 600));
-      await markOrderPaid(activeOrderId, "SIMULATED_PROVIDER_ORDER_ID");
       await finalizeSuccessfulPayment("external_simulated");
-      setActiveOrderId(null);
     } catch (e: any) {
       setStatus({ type: "error", msg: e.message || "Simulated payment failed." });
     } finally {
@@ -773,7 +736,6 @@ export default function PaymentPage() {
           </div>
         </div>
 
-        {/* ✅ Minimal: demo notice banner (only shows in demo mode) */}
         {IS_DEMO_CHECKOUT ? (
           <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
             <p className="text-[10px] font-black uppercase tracking-widest text-amber-800">
@@ -783,9 +745,8 @@ export default function PaymentPage() {
         ) : null}
 
         <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(300px,440px)] gap-8">
-          {/* LEFT: Purchasables */}
+          {/* LEFT */}
           <div className="space-y-6">
-            {/* Reports */}
             <div className="space-y-3">
               <div className="flex items-end justify-between">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Select Reports</h3>
@@ -873,7 +834,6 @@ export default function PaymentPage() {
               })}
             </div>
 
-            {/* Membership selection (select only) */}
             {!membershipActive ? (
               <p className="text-[9px] text-slate-600 font-medium leading-snug max-w-[520px]">
                 <span className="font-black uppercase tracking-widest">Note:</span>{" "}
@@ -881,6 +841,7 @@ export default function PaymentPage() {
                 membership fees.
               </p>
             ) : null}
+
             <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <Crown size={16} className="text-slate-400" />
@@ -934,6 +895,7 @@ export default function PaymentPage() {
                   })}
                 </div>
               )}
+
               <p className="mt-3 text-[9px] text-slate-400 font-medium leading-snug max-w-[360px]">
                 {isAnonymous
                   ? "Save your account to unlock membership and longer access."
@@ -944,21 +906,21 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          {/* RIGHT: Payment + center + promo */}
+          {/* RIGHT */}
           <div className="lg:sticky lg:top-24 h-fit space-y-6">
-            {/* Payment summary */}
             <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
               <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Payment</h3>
 
               <div className="space-y-3 mb-4">
                 <Row label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
-                {selectedPlan ? <Row label="Active Report Credit" value={`-$${membershipDiscountApplied.toFixed(2)}`} muted /> : null}
+                {selectedPlan ? (
+                  <Row label="Active Report Credit" value={`-$${membershipDiscountApplied.toFixed(2)}`} muted />
+                ) : null}
                 <Row label="Credits Applied" value={`-$${creditsApplied.toFixed(2)}`} muted />
                 <div className="pt-2 border-t border-slate-100" />
                 <Row label="Amount Due" value={`$${amountDue.toFixed(2)}`} strong />
               </div>
 
-              {/* Credit input */}
               <div className="mb-4">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                   Apply Store Credits
@@ -1014,7 +976,6 @@ export default function PaymentPage() {
                         Top Up Balance (${amountDue.toFixed(2)})
                       </button>
 
-                      {/* ✅ Minimal: inline notice under the button */}
                       {IS_DEMO_CHECKOUT ? (
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">
                           Demo mode: no real payment is processed.
@@ -1045,7 +1006,6 @@ export default function PaymentPage() {
               ) : null}
             </div>
 
-            {/* Payment Center Placeholder */}
             {paymentCenterOpen ? (
               <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
@@ -1077,7 +1037,6 @@ export default function PaymentPage() {
               </div>
             ) : null}
 
-            {/* Promo code */}
             <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Redeem Promo Code</p>
               <div className="mt-4">

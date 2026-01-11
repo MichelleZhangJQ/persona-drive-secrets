@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { submitTestDataClient } from '@/lib/core-utils/client-actions';
-import { AuthHeader } from '@/components/AuthHeader';
+import { submitTestDataClient } from "@/lib/core-utils/client-actions";
+import { AuthHeader } from "@/components/AuthHeader";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
@@ -31,20 +31,37 @@ const QUESTIONS = [
   { id: 18 },
   { id: 19 },
   { id: 20 },
-];
-  
+] as const;
+
+const DAYS_30_MS = 30 * 24 * 60 * 60 * 1000;
+
+function isWithin30Days(createdAt: string | null | undefined) {
+  if (!createdAt) return false;
+  const t = new Date(createdAt).getTime();
+  if (!Number.isFinite(t)) return false;
+  return Date.now() - t <= DAYS_30_MS;
+}
 
 export default function SurfacePersonaPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = typeof params?.locale === "string" ? params.locale : "en";
+  const locale = typeof (params as any)?.locale === "string" ? (params as any).locale : "en";
   const t = useTranslations("tests.surface");
   const supabase = createBrowserSupabaseClient();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [incompleteMessage, setIncompleteMessage] = useState<string | null>(null);
-  
+
+  // Flags for previous record load
+  const [recordKnown, setRecordKnown] = useState(false);
+  const [recordExists, setRecordExists] = useState(false);
+  const [recordLoadError, setRecordLoadError] = useState<string | null>(null);
+  const [latestRowId, setLatestRowId] = useState<number | null>(null);
+  const [latestCreatedAt, setLatestCreatedAt] = useState<string | null>(null);
+
   const themeBlue = "#5d7fc9";
+
   const withLocale = (href: string) => {
     if (!href) return `/${locale}`;
     if (href.startsWith("http") || href.startsWith("mailto:")) return href;
@@ -53,68 +70,193 @@ export default function SurfacePersonaPage() {
     return `/${locale}/${href}`;
   };
 
-  const [answers, setAnswers] = useState<Record<number, AnswerValue>>(
-    () => QUESTIONS.reduce((acc, q) => ({ ...acc, [q.id]: 0 }), {})
-  );
+  const emptyAnswers = useMemo(() => {
+    const base: Record<number, AnswerValue> = {};
+    QUESTIONS.forEach((q) => (base[q.id] = 0));
+    return base;
+  }, []);
 
-  // Repopulation logic: Load records if < 30 days old
-  useEffect(() => {
-    async function loadLastRecord() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('surface-persona')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (data && !error) {
-        const lastDate = new Date(data.created_at);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-        if (lastDate > thirtyDaysAgo) {
-          const loadedAnswers: Record<number, AnswerValue> = {};
-          QUESTIONS.forEach((q) => {
-            loadedAnswers[q.id] = (data[`q${q.id}_answer`] || 0) as AnswerValue;
-          });
-          setAnswers(loadedAnswers);
-        }
-      }
-    }
-    loadLastRecord();
-  }, [supabase]);
+  const [answers, setAnswers] = useState<Record<number, AnswerValue>>(emptyAnswers);
 
   const handleAnswerSelect = (id: number, val: number) => {
     setIncompleteMessage(null);
-    setAnswers(prev => ({ ...prev, [id]: val as AnswerValue }));
+    setAnswers((prev) => ({ ...prev, [id]: val as AnswerValue }));
   };
+
+  // ✅ Load latest previous answers (do NOT create anon session on load)
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setRecordKnown(false);
+      setRecordLoadError(null);
+      setRecordExists(false);
+      setLatestRowId(null);
+      setLatestCreatedAt(null);
+
+      try {
+        const {
+          data: { user },
+          error: userErr,
+        } = await supabase.auth.getUser();
+
+        if (userErr) {
+          if (!cancelled) {
+            setRecordLoadError(userErr.message);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        if (!user) {
+          if (!cancelled) {
+            setAnswers(emptyAnswers);
+            setRecordExists(false);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("surface-persona")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          if (!cancelled) {
+            setRecordLoadError(error.message);
+            setRecordExists(false);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        if (!data) {
+          if (!cancelled) {
+            setAnswers(emptyAnswers);
+            setRecordExists(false);
+            setRecordKnown(true);
+          }
+          return;
+        }
+
+        const next: Record<number, AnswerValue> = { ...emptyAnswers };
+        for (const q of QUESTIONS) {
+          const key = `q${q.id}_answer`;
+          const v = Number((data as any)[key]);
+          next[q.id] = (Number.isFinite(v) ? v : 0) as AnswerValue;
+        }
+
+        if (!cancelled) {
+          setAnswers(next);
+          setRecordExists(true);
+          setLatestRowId((data as any).id ?? null);
+          setLatestCreatedAt((data as any).created_at ?? null);
+          setRecordKnown(true);
+        }
+      } catch (e: any) {
+        if (!cancelled) {
+          setRecordLoadError(e?.message ?? "Unknown error");
+          setRecordExists(false);
+          setRecordKnown(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase, emptyAnswers]);
 
   const handleSave = async () => {
     if (isSubmitting) return;
+
     const hasMissing = QUESTIONS.some((q) => answers[q.id] === 0);
     if (hasMissing) {
       setSaveMessage(null);
       setIncompleteMessage(t("incomplete"));
       return;
     }
+
     setIsSubmitting(true);
-    
+
     const dataToSend: Record<string, number> = {};
     Object.entries(answers).forEach(([id, val]) => {
       dataToSend[`q${id}_answer`] = val;
     });
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      // ✅ Ensure user exists ONLY at save time
+      let {
+        data: { user },
+        error: userErr,
+      } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+
       if (!user) {
-        await supabase.auth.signInAnonymously();
+        const { error: anonErr } = await supabase.auth.signInAnonymously();
+        if (anonErr) throw anonErr;
+
+        const again = await supabase.auth.getUser();
+        user = again.data.user ?? null;
       }
 
-      const result = await submitTestDataClient('surface-persona', dataToSend);
+      if (!user) {
+        setIsSubmitting(false);
+        alert(t("error"));
+        return;
+      }
+
+      // ✅ Determine update vs insert using latest record (authoritative)
+      const { data: latest, error: latestErr } = await supabase
+        .from("surface-persona")
+        .select("id,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestErr) throw latestErr;
+
+      const nowIso = new Date().toISOString();
+
+      const payload: Record<string, any> = {
+        user_id: user.id,
+        updated_at: nowIso,
+        ...dataToSend,
+      };
+
+      if (latest?.id && isWithin30Days(latest.created_at)) {
+        const { error: updErr } = await supabase
+          .from("surface-persona")
+          .update(payload)
+          .eq("id", latest.id);
+        if (updErr) throw updErr;
+
+        setRecordExists(true);
+        setLatestRowId(latest.id);
+        setLatestCreatedAt(latest.created_at ?? null);
+      } else {
+        payload.created_at = nowIso;
+        const { data: ins, error: insErr } = await supabase
+          .from("surface-persona")
+          .insert(payload)
+          .select("id,created_at")
+          .single();
+        if (insErr) throw insErr;
+
+        setRecordExists(true);
+        setLatestRowId((ins as any)?.id ?? null);
+        setLatestCreatedAt((ins as any)?.created_at ?? nowIso);
+      }
+
+      // Keep your existing client-action call (if you still want it for other side effects).
+      // If this duplicates writes, remove this block.
+      const result = await submitTestDataClient("surface-persona", dataToSend);
+
       if (result?.success) {
         router.refresh();
         setSaveMessage(t("saved"));
@@ -122,9 +264,14 @@ export default function SurfacePersonaPage() {
       } else {
         setIsSubmitting(false);
         alert(t("error"));
+        return;
       }
     } catch (e) {
       console.error("Submission error:", e);
+      setIsSubmitting(false);
+      alert(t("error"));
+      return;
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -178,6 +325,7 @@ export default function SurfacePersonaPage() {
                     {[1, 2, 3, 4, 5].map((num) => (
                       <button
                         key={num}
+                        type="button"
                         onClick={() => handleAnswerSelect(q.id, num)}
                         className={`h-9 w-9 rounded-full border-2 font-black transition-all flex items-center justify-center text-sm
                         ${
@@ -215,6 +363,7 @@ export default function SurfacePersonaPage() {
             </Link>
 
             <button
+              type="button"
               onClick={handleSave}
               disabled={isSubmitting}
               className="rounded-xl py-3 text-center font-black text-white shadow-lg transition-all active:scale-95 disabled:bg-slate-300 uppercase tracking-widest text-xs"
@@ -232,6 +381,9 @@ export default function SurfacePersonaPage() {
             </Link>
           </div>
         </div>
+
+        {/* Flags kept for debugging if needed (not rendered): */}
+        {/* recordKnown={String(recordKnown)} recordExists={String(recordExists)} recordLoadError={recordLoadError} latestRowId={latestRowId} latestCreatedAt={latestCreatedAt} */}
       </main>
     </div>
   );

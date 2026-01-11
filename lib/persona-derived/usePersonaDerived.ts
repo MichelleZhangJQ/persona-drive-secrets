@@ -36,13 +36,7 @@ export function usePersonaDerived(): UsePersonaDerivedResult {
       error: userError,
     } = await supabase.auth.getUser();
 
-    let activeUser = user;
-    if (userError || !activeUser?.id) {
-      const { data: anonData } = await supabase.auth.signInAnonymously();
-      activeUser = anonData?.user ?? null;
-    }
-
-    if (!activeUser?.id) {
+    if (userError || !user?.id) {
       setError("no_user");
       setDerived(null);
       setLatestTests(null);
@@ -54,7 +48,7 @@ export function usePersonaDerived(): UsePersonaDerivedResult {
     try {
       const result = await ensurePersonaDerived({
         supabase,
-        userId: activeUser.id,
+        userId: user.id,
       });
 
       if (result.status === "missing_tests") {

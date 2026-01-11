@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { submitTestDataClient } from "@/lib/core-utils/client-actions";
 import { AuthHeader } from "@/components/AuthHeader";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -14,42 +13,103 @@ interface Question {
   id: number;
 }
 
-const QUESTIONS: Question[] = [
-  { id: 1 },
-  { id: 2 },
-  { id: 3 },
-  { id: 4 },
-  { id: 5 },
-  { id: 6 },
-  { id: 7 },
-  { id: 8 },
-  { id: 9 },
-  { id: 10 },
-  { id: 11 },
-  { id: 12 },
-  { id: 13 },
-  { id: 14 },
-  { id: 15 },
-  { id: 16 },
-  { id: 17 },
-  { id: 18 },
-  { id: 19 },
-  { id: 20 },
-  { id: 21 },
-];
+const QUESTIONS: Question[] = Array.from({ length: 21 }, (_, i) => ({ id: i + 1 }));
+
+type Locale = "en" | "zh";
+
+type LoadState = "idle" | "no-user" | "loaded" | "missing" | "error";
+
+type ImposedPersonaRow = {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+
+  q1_answer: number;
+  q2_answer: number;
+  q3_answer: number;
+  q4_answer: number;
+  q5_answer: number;
+  q6_answer: number;
+  q7_answer: number;
+  q8_answer: number;
+  q9_answer: number;
+  q10_answer: number;
+  q11_answer: number;
+  q12_answer: number;
+  q13_answer: number;
+  q14_answer: number;
+  q15_answer: number;
+  q16_answer: number;
+  q17_answer: number;
+  q18_answer: number;
+  q19_answer: number;
+  q20_answer: number;
+  q21_answer: number;
+};
+
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+function isWithin30Days(ts: string | null | undefined) {
+  if (!ts) return false;
+  const d = new Date(ts);
+  const t = d.getTime();
+  if (!Number.isFinite(t)) return false;
+  return Date.now() - t <= THIRTY_DAYS_MS;
+}
+
+function clampAnswer(v: any): AnswerValue {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return 0;
+  if (n < 0) return 0;
+  if (n > 5) return 5;
+  return n as AnswerValue;
+}
+
+function buildEmptyAnswers() {
+  return QUESTIONS.reduce((acc, q) => {
+    acc[q.id] = 0 as AnswerValue;
+    return acc;
+  }, {} as Record<number, AnswerValue>);
+}
+
+function rowToAnswers(row: ImposedPersonaRow): Record<number, AnswerValue> {
+  const out: Record<number, AnswerValue> = {};
+  for (let i = 1; i <= 21; i++) {
+    // @ts-expect-error dynamic key is safe here
+    out[i] = clampAnswer(row[`q${i}_answer`]);
+  }
+  return out;
+}
+
+function answersToPayload(answers: Record<number, AnswerValue>) {
+  const payload: Record<string, number> = {};
+  for (let i = 1; i <= 21; i++) {
+    payload[`q${i}_answer`] = Number(answers[i] ?? 0);
+  }
+  return payload;
+}
 
 export default function PublicPersonaTestPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = typeof params?.locale === "string" ? params.locale : "en";
-  const t = useTranslations("tests.imposed");
-  const supabase = createBrowserSupabaseClient();
+  const locale: Locale = (typeof params?.locale === "string" ? params.locale : "en") as Locale;
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations("tests.imposed");
+  const supabase = useMemo(() => createBrowserSupabaseClient(), []);
+
   const themeColor = "#93a97c";
 
+  const [answers, setAnswers] = useState<Record<number, AnswerValue>>(() => buildEmptyAnswers());
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [incompleteMessage, setIncompleteMessage] = useState<string | null>(null);
+
+  // Load state
+  const [loadState, setLoadState] = useState<LoadState>("idle");
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [latestRow, setLatestRow] = useState<ImposedPersonaRow | null>(null);
 
   const withLocale = (href: string) => {
     if (!href) return `/${locale}`;
@@ -59,90 +119,182 @@ export default function PublicPersonaTestPage() {
     return `/${locale}/${href}`;
   };
 
-  const [answers, setAnswers] = useState<Record<number, AnswerValue>>(() =>
-    QUESTIONS.reduce((acc, q) => ({ ...acc, [q.id]: 0 }), {})
-  );
-
-  // Populate selections based on the last record if it's < 30 days old
-  useEffect(() => {
-    async function loadLastRecord() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("imposed-persona")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-      if (data && !error) {
-        const lastDate = new Date(data.created_at);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-        if (lastDate > thirtyDaysAgo) {
-          const loadedAnswers: Record<number, AnswerValue> = {};
-          QUESTIONS.forEach((q) => {
-            loadedAnswers[q.id] = (data[`q${q.id}_answer`] || 0) as AnswerValue;
-          });
-          setAnswers(loadedAnswers);
-        }
-      }
-    }
-    loadLastRecord();
-  }, [supabase]);
-
   const handleAnswerSelect = (questionId: number, value: number) => {
     setIncompleteMessage(null);
+    setSaveMessage(null);
     setAnswers((prev) => ({
       ...prev,
-      [questionId]: value as AnswerValue,
+      [questionId]: clampAnswer(value),
     }));
   };
 
+  // 1) LOAD: fetch latest record for current user; populate answers if exists
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadLatest() {
+      setLoadState("idle");
+      setLoadError(null);
+
+      try {
+        const {
+          data: { user },
+          error: userErr,
+        } = await supabase.auth.getUser();
+
+        if (cancelled) return;
+
+        if (userErr) {
+          setLoadState("error");
+          setLoadError(userErr.message);
+          setLatestRow(null);
+          return;
+        }
+
+        if (!user) {
+          setLoadState("no-user");
+          setLatestRow(null);
+          // keep default answers
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("imposed-persona")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (cancelled) return;
+
+        if (error) {
+          setLoadState("error");
+          setLoadError(error.message);
+          setLatestRow(null);
+          return;
+        }
+
+        const row = (data?.[0] as ImposedPersonaRow | undefined) ?? null;
+        if (!row) {
+          setLoadState("missing");
+          setLatestRow(null);
+          return;
+        }
+
+        setLatestRow(row);
+        setAnswers(rowToAnswers(row));
+        setLoadState("loaded");
+      } catch (e: any) {
+        if (cancelled) return;
+        setLoadState("error");
+        setLoadError(e?.message ?? "Failed to load previous responses.");
+        setLatestRow(null);
+      }
+    }
+
+    loadLatest();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
+
+  const hasMissing = useMemo(() => QUESTIONS.some((q) => answers[q.id] === 0), [answers]);
+
+  // 2) SAVE: if latest within 30 days => update it, else insert new row
   const handleSaveToServer = async () => {
     if (isSubmitting) return;
 
-    const hasMissing = QUESTIONS.some((q) => answers[q.id] === 0);
+    setSaveMessage(null);
+    setIncompleteMessage(null);
+
     if (hasMissing) {
-      setSaveMessage(null);
       setIncompleteMessage(t("incomplete"));
       return;
     }
 
     setIsSubmitting(true);
 
-    const dataToSend: Record<string, number> = {};
-    for (const id in answers) {
-      dataToSend[`q${id}_answer`] = answers[Number(id)];
-    }
-
     try {
+      // ensure user
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) {
-        await supabase.auth.signInAnonymously();
+
+      let activeUser = user;
+      if (!activeUser) {
+        const { data: anonData, error: anonErr } = await supabase.auth.signInAnonymously();
+        if (anonErr) throw anonErr;
+        activeUser = anonData?.user ?? null;
       }
+      if (!activeUser) throw new Error("Unable to identify user session.");
 
-      const result = await submitTestDataClient("imposed-persona", dataToSend);
+      // re-fetch latest row to avoid stale state
+      const { data: latestData, error: latestErr } = await supabase
+        .from("imposed-persona")
+        .select("*")
+        .eq("user_id", activeUser.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
 
-      if (result?.success) {
-        router.refresh();
-        setSaveMessage(t("saved"));
-        setIncompleteMessage(null);
-        setIsSubmitting(false);
+      if (latestErr) throw latestErr;
+
+      const latest = (latestData?.[0] as ImposedPersonaRow | undefined) ?? null;
+      const payload = answersToPayload(answers);
+      const nowIso = new Date().toISOString();
+
+      if (latest && isWithin30Days(latest.created_at)) {
+        // UPDATE latest row
+        const { error: updErr } = await supabase
+          .from("imposed-persona")
+          .update({
+            ...payload,
+            updated_at: nowIso,
+          })
+          .eq("id", latest.id)
+          .eq("user_id", activeUser.id);
+
+        if (updErr) throw updErr;
       } else {
-        console.error("Submission rejected:", result?.message);
-        setIsSubmitting(false);
-        alert(t("error"));
+        // INSERT new row
+        const { error: insErr } = await supabase.from("imposed-persona").insert({
+          user_id: activeUser.id,
+          ...payload,
+          // created_at defaults to now(); updated_at defaults to now()
+          // but it's fine to set updated_at explicitly too
+          updated_at: nowIso,
+        });
+
+        if (insErr) throw insErr;
       }
+
+      // refresh local latest state by fetching again
+      const { data: newLatestData, error: newLatestErr } = await supabase
+        .from("imposed-persona")
+        .select("*")
+        .eq("user_id", activeUser.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (newLatestErr) throw newLatestErr;
+
+      const newLatest = (newLatestData?.[0] as ImposedPersonaRow | undefined) ?? null;
+      if (newLatest) {
+        setLatestRow(newLatest);
+        setAnswers(rowToAnswers(newLatest));
+        setLoadState("loaded");
+      } else {
+        // should not happen, but handle gracefully
+        setLatestRow(null);
+        setLoadState("missing");
+      }
+
+      router.refresh();
+      setSaveMessage(t("saved"));
     } catch (error: any) {
-      console.error("Submission failed:", error);
+      console.error("Save failed:", error);
+      alert(t("error"));
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -158,6 +310,22 @@ export default function PublicPersonaTestPage() {
             {t("title")}
           </h1>
           <p className="text-slate-500 text-xs mt-1 font-medium italic">{t("subtitle")}</p>
+
+          {/* optional tiny load status (useful while debugging) */}
+          <div className="mt-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            {loadState === "loaded" && latestRow ? (
+              <span>
+                Loaded last saved:{" "}
+                <span className="text-slate-600">{new Date(latestRow.created_at).toLocaleString()}</span>
+              </span>
+            ) : loadState === "missing" ? (
+              <span>No previous saved record found.</span>
+            ) : loadState === "no-user" ? (
+              <span>Not signed in yet (will create anonymous session on Save).</span>
+            ) : loadState === "error" ? (
+              <span className="text-rose-600">Load error: {loadError ?? "unknown"}</span>
+            ) : null}
+          </div>
         </section>
 
         {/* tighter list spacing */}
@@ -166,22 +334,16 @@ export default function PublicPersonaTestPage() {
             const isUnselected = answers[q.id] === 0;
 
             return (
-              <div
-                key={q.id}
-                className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200 overflow-hidden"
-              >
+              <div key={q.id} className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200 overflow-hidden">
                 <p className="mb-3 text-sm font-semibold text-slate-800 leading-snug">
                   Q{q.id}: {t(`q${q.id}`)}
                 </p>
 
-                {/* IMPORTANT: keep layout stable by centering and reserving space for the hint */}
                 <div className="flex items-center justify-center gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                  {/* fixed-width left label */}
                   <span className="text-[9px] font-black text-slate-400 uppercase w-14 text-right leading-tight shrink-0 tracking-wider">
                     {t("disagree")}
                   </span>
 
-                  {/* buttons */}
                   <div className="flex items-center gap-2 shrink-0">
                     {[1, 2, 3, 4, 5].map((num) => (
                       <button
@@ -204,12 +366,10 @@ export default function PublicPersonaTestPage() {
                     ))}
                   </div>
 
-                  {/* fixed-width right label */}
                   <span className="text-[9px] font-black text-slate-400 uppercase w-14 text-left leading-tight shrink-0 tracking-wider">
                     {t("agree")}
                   </span>
 
-                  {/* reserved space so nothing jumps when selection changes */}
                   <span
                     className={`hidden sm:inline text-[9px] italic w-24 text-right ${
                       isUnselected ? "text-slate-400" : "text-slate-400 opacity-0 pointer-events-none select-none"

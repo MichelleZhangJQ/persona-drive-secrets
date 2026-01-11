@@ -27,10 +27,11 @@
       "note": "Complete a short test pack to unlock 10 days of full access."
     }
   },
-    "progress": {
+  "progress": {
     "title": "Take Tests & Get Summary",
     "step": "Step {number}",
     "hint": "Start with Imposed, then Surface and Innate, then view your Summary Report.",
+    "completeTest": "Complete this test",
     "steps": {
       "imposed": { "label": "Imposed Persona", "tag": "Environment" },
       "surface": { "label": "Surface Persona", "tag": "Daily Strategy" },
