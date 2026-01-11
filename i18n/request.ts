@@ -2,7 +2,10 @@ import { getRequestConfig } from "next-intl/server";
 import { locales, defaultLocale } from "@/i18n/config";
 
 export default getRequestConfig(async ({ locale }) => {
-  const resolvedLocale = locales.includes(locale as any) ? locale : defaultLocale;
+  const resolvedLocale =
+    typeof locale === "string" && (locales as readonly string[]).includes(locale)
+      ? locale
+      : defaultLocale;
 
   const home = (await import(`@/locales/${resolvedLocale}/home.json`)).default;
   const tests = (await import(`@/locales/${resolvedLocale}/tests.json`)).default;
